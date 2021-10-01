@@ -57,15 +57,18 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Optional<Tag> findByName(String name) {
-        return jdbcTemplate.query(GET_BY_NAME, tagMapper, name).stream().findAny(); // Todo do not use stream
+        Optional<Tag> optionalTag = Optional.empty();
+        List<Tag> tags = jdbcTemplate.query(GET_BY_NAME, tagMapper, name);
+        return tags.isEmpty() ? optionalTag : Optional.of(tags.get(0));
     }
 
     @Override
     public List<Tag> addCertificateTags(List<Tag> tags) { // Todo rename method
         List<Tag> tagsWithId = new ArrayList<>();
         tags.forEach(t -> {
-            if (findByName(t.getName()).isEmpty()) {
-                tagsWithId.add(t);
+            Optional<Tag> optionalTag = findByName(t.getName());
+            if (optionalTag.isPresent()) {
+                tagsWithId.add(optionalTag.get());
             } else {
                 Tag tag = create(t);
                 tagsWithId.add(tag);

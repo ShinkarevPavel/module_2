@@ -3,7 +3,6 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.service.BaseService;
 import com.epam.esm.util.GiftCertificateConverter;
@@ -50,13 +49,9 @@ public class GiftCertificateServiceImpl implements BaseService {
     @Override
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         GiftCertificate certificate = GiftCertificateConverter.toEntity(giftCertificateDto);
-        //1. call add Certificate
-        //2. call addTags
-        //3. add to common table
         certificate = giftCertificateDao.create(certificate);
         certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
         giftCertificateDao.addToAssociateTable(certificate.getId(), certificate.getTags());
-
-        return GiftCertificateConverter.toDto(giftCertificateDao.create(certificate));
+        return GiftCertificateConverter.toDto(certificate);
     }
 }
