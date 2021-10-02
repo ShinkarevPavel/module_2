@@ -1,8 +1,7 @@
 package com.epam.esm.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,8 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-
 public class GiftCertificateDto {
+
     private Long id;
 
     private String name;
@@ -22,11 +21,15 @@ public class GiftCertificateDto {
     private Double price;
 
     private Integer duration;
+    @JsonIgnore
+    @Builder.Default
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime createDate;
+    private LocalDateTime createDate = LocalDateTime.now();
+    @JsonIgnore
+    @Builder.Default
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime lastUpdateDate;
-
+    private LocalDateTime lastUpdateDate = LocalDateTime.now();
     @Singular
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<TagDto> tags;
 }

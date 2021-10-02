@@ -1,19 +1,17 @@
 package com.epam.esm.dao.rowmapper;
 
 import com.epam.esm.entity.Tag;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.epam.esm.dao.TagColumnName.*;
 
 @Component
-@Builder
 public class TagMapper implements RowMapper<Tag> {
+    private static final String TAG_ID = "t.id";
+    private static final String TAG_NAME = "t.name";
 
     @Override
     public Tag mapRow(ResultSet resultSet, int i) throws SQLException {

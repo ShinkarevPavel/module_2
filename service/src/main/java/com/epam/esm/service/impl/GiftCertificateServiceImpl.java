@@ -4,7 +4,7 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.service.BaseService;
+import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.GiftCertificateConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Component
 @Builder
 @AllArgsConstructor
-public class GiftCertificateServiceImpl implements BaseService {
+public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDao giftCertificateDao;
     private TagDao tagDao;
@@ -27,16 +27,10 @@ public class GiftCertificateServiceImpl implements BaseService {
     @Override
     public List<GiftCertificateDto> getAll() {
         List<GiftCertificate> giftCertificateList = giftCertificateDao.findAll();
-        List<GiftCertificateDto> giftCertificateDTOList = entityToDto(giftCertificateList);
-        return giftCertificateDTOList;
-    }
-
-    private List<GiftCertificateDto> entityToDto(List<GiftCertificate> certificates) { //Todo sent to UTIL class !!!
-        List<GiftCertificateDto> dtoCertificates = certificates.stream()
+        return giftCertificateList.stream()
                 .map(GiftCertificateConverter::toDto)
                 .collect(Collectors
                         .toList());
-        return dtoCertificates;
     }
 
     @Override
@@ -44,6 +38,7 @@ public class GiftCertificateServiceImpl implements BaseService {
         GiftCertificate certificate = giftCertificateDao.findById(id).orElseThrow();
         return GiftCertificateConverter.toDto(certificate);
     }
+
 
     @Transactional
     @Override
@@ -53,5 +48,18 @@ public class GiftCertificateServiceImpl implements BaseService {
         certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
         giftCertificateDao.addToAssociateTable(certificate.getId(), certificate.getTags());
         return GiftCertificateConverter.toDto(certificate);
+    }
+
+    @Transactional
+    @Override
+    public void delete(long id) {
+        giftCertificateDao.deleteFromAssociateTable(id);
+        giftCertificateDao.delete(id);
+    }
+
+    @Override
+    public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
+        GiftCertificate certificate = GiftCertificateConverter.toEntity(giftCertificateDto);
+        return null;
     }
 }

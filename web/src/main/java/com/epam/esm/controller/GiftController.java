@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.service.BaseService;
+import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -14,10 +14,10 @@ import java.util.List;
 @RequestMapping("/api/gifts")
 public class GiftController {
 
-    private final BaseService giftCertificateService;
+    private final GiftCertificateService giftCertificateService;
 
     @Autowired
-    public GiftController(BaseService giftCertificateService) {
+    public GiftController(GiftCertificateService giftCertificateService) {
         this.giftCertificateService = giftCertificateService;
     }
 

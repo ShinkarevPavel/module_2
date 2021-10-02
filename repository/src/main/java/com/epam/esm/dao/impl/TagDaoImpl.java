@@ -1,16 +1,14 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.rowmapper.TagMapper;
-import com.epam.esm.dao.sqlqueries.TagQueries;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.dao.rowmapper.TagMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -18,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.dao.sqlqueries.CertificateSqlQuery.*;
-import static com.epam.esm.dao.sqlqueries.TagQueries.*;
-
 @Builder
 @AllArgsConstructor
 @Component
 public class TagDaoImpl implements TagDao {
+    private static final String GET_BY_NAME = "SELECT t.id, t.name FROM tags AS t WHERE name=?";
+    private static final  String CREATE_TAG = "INSERT INTO tags (name) VALUES (?)";
+
     private JdbcTemplate jdbcTemplate;
     private TagMapper tagMapper;
 

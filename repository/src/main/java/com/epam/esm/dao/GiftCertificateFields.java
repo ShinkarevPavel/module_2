@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-public interface GiftCertificateColumnName {
+public interface GiftCertificateFields {
     String ID = "id";
     String NAME = "name";
     String DESCRIPTION = "description";

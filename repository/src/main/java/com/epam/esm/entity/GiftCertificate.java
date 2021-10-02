@@ -19,7 +19,7 @@ public class GiftCertificate {
 
     private String description;
 
-    private double price;
+    private Double price;
 
     private Integer duration;
 
