@@ -63,17 +63,18 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> addCertificateTags(List<Tag> tags) { // Todo rename method
+    public Tag findOrCreateTag(Tag tag) {
+        Optional<Tag> optionalTag = findByName(tag.getName());
+        if (!optionalTag.isPresent()) {
+            optionalTag = Optional.of(create(tag));
+        }
+        return optionalTag.get();
+    }
+
+    @Override
+    public List<Tag> addCertificateTags(List<Tag> tags) {
         List<Tag> tagsWithId = new ArrayList<>();
-        tags.forEach(t -> {
-            Optional<Tag> optionalTag = findByName(t.getName());
-            if (optionalTag.isPresent()) {
-                tagsWithId.add(optionalTag.get());
-            } else {
-                Tag tag = create(t);
-                tagsWithId.add(tag);
-            }
-        });
+        tags.forEach(t -> tagsWithId.add(findOrCreateTag(t)));
         return tagsWithId;
     }
 }
