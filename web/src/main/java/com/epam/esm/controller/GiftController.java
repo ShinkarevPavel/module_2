@@ -35,6 +35,12 @@ public class GiftController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GiftCertificateDto create(@RequestBody GiftCertificateDto certificateDto) {
-        return  giftCertificateService.create(certificateDto);
+        return giftCertificateService.create(certificateDto);
+    }
+
+    @PutMapping
+    public GiftCertificateDto update(@RequestBody GiftCertificateDto giftCertificateDto) {
+        System.out.println(giftCertificateDto);
+        return giftCertificateService.update(giftCertificateDto);
     }
 }

@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.SqlQueryBuilder;
 import com.epam.esm.dao.rowmapper.GiftCertificateMapper;
 import com.epam.esm.dao.rowmapper.GiftMapper;
 import com.epam.esm.entity.GiftCertificate;
@@ -10,25 +11,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
-@Component
 @Builder
 @RequiredArgsConstructor
 
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
-    public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-
-
     private static final String SELECT_ALL_GIFT_CERTIFICATES = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
             "gc.last_update_date,t.id, t.name FROM gift_certificate AS gc LEFT JOIN associativetable " +
             "AS at ON gc.id=at.gift_id LEFT JOIN tags AS t ON at.tag_id=t.id";
@@ -38,6 +34,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String SELECT_BY_ID = SELECT_ALL_GIFT_CERTIFICATES + " WHERE gc.id=?";
     private static final String DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id=?";
     private static final String DELETE_BY_ID_FROM_COMMON_TABLE = "DELETE FROM associativetable WHERE id=?";
+    private static final String COUNT_BY_ID = "SELECT count(*) FROM gift_certificate WHERE id = ?";
+    private static final String FIND_PAR_INTO_COMMON_TABLE = "SELECT count(*) FROM associativetable WHERE gift_id = ? and tag_id=?";
 
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateMapper giftCertificateMapper;
@@ -53,9 +51,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             statement.setString(2, certificate.getDescription());
             statement.setDouble(3, certificate.getPrice());
             statement.setInt(4, certificate.getDuration());
-            DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
-            statement.setTimestamp(5, Timestamp.valueOf(certificate.getCreateDate().format(FORMATTER)));
-            statement.setTimestamp(6, Timestamp.valueOf(certificate.getLastUpdateDate().format(FORMATTER)));
+            statement.setTimestamp(5, Timestamp.valueOf(certificate.getCreateDate()));
+            statement.setTimestamp(6, Timestamp.valueOf(certificate.getLastUpdateDate()));
             return statement;
         }, keyHolder);
         certificate.setId(keyHolder.getKey().longValue());
@@ -87,6 +84,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
+    public boolean isPresent(long id) {
+       return jdbcTemplate.queryForObject(COUNT_BY_ID, Long.class, id) > 0;
+    }
+
+    @Override
     public void delete(long id) {
         jdbcTemplate.update(DELETE_BY_ID, id);
     }
@@ -97,14 +99,23 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
+    public boolean checkAssociateTable(Long certificateId, Long tagId) {
+        return jdbcTemplate.queryForObject(FIND_PAR_INTO_COMMON_TABLE, Integer.class, certificateId, tagId) > 0;
+    }
+
+    @Override
     public List<GiftCertificate> findAll() {
         return jdbcTemplate.query(SELECT_ALL_GIFT_CERTIFICATES, giftMapper);
     }
 
-    public void update(GiftCertificate giftCertificate) {
-        // check all fields on f`n NULL
-        // build query with only notNull field
-        // sent f'n query to DB
-        // if tag is not created - create and add to list
+    @Override
+    public GiftCertificate update(Map<String, Object> notNullFields, long id) {
+        SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
+        String updateQuery = sqlQueryBuilder.buildQueryForUpdate(notNullFields);
+        List<Object> value = new ArrayList<>(notNullFields.values());
+        value.add(id);
+        Object[] parameters = value.toArray(new Object[value.size()]);
+        jdbcTemplate.update(updateQuery, parameters);
+        return findById(id).get();
     }
 }
