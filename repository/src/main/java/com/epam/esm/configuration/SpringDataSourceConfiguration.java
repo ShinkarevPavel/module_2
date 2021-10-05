@@ -1,5 +1,7 @@
 package com.epam.esm.configuration;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,26 +20,32 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class SpringDataSourceConfiguration {
 
-    @Value("${driver}")
+    @Value("${db.driver}")
     private String DB_DRIVER;
 
-    @Value("${jdbcUrl}")
+    @Value("${db.jdbcUrl}")
     private String DB_URL;
 
-    @Value("${username}")
+    @Value("${db.username}")
     private String DB_USERNAME;
 
-    @Value("${password}")
+    @Value("${db.password}")
     private String DB_PASSWORD;
 
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(DB_DRIVER);
-        dataSource.setUrl(DB_URL);
-        dataSource.setUsername(DB_USERNAME);
-        dataSource.setPassword(DB_PASSWORD);
-        return dataSource;
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setDriverClassName(DB_DRIVER);
+        hikariConfig.setJdbcUrl(DB_URL);
+        hikariConfig.setUsername(DB_USERNAME);
+        hikariConfig.setPassword(DB_PASSWORD);
+        hikariConfig.setMaximumPoolSize(10);
+        hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", "true");
+        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
+        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+        hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
+        HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
+        return hikariDataSource;
     }
 
     @Bean
