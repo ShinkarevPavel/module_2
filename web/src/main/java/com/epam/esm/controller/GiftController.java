@@ -4,6 +4,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,8 +40,16 @@ public class GiftController {
     }
 
     @PutMapping
-    public GiftCertificateDto update(@RequestBody GiftCertificateDto giftCertificateDto) {
-        System.out.println(giftCertificateDto);
-        return giftCertificateService.update(giftCertificateDto);
+    @ResponseStatus(HttpStatus.OK)
+    public void update(@RequestBody GiftCertificateDto giftCertificateDto) {
+        giftCertificateService.update(giftCertificateDto);
+    }
+
+    @GetMapping("/param")
+    public List<GiftCertificateDto> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
+                                                     @RequestParam(required = false, name = "certificateName") String searchPart,
+                                                     @RequestParam(required = false, name = "sortByCreateDate") List<String> fieldsForSort,
+                                                     @RequestParam(required = false, name = "description") List<String> orderSort) {
+        return giftCertificateService.findByAttributes(tagName, searchPart, fieldsForSort, orderSort);
     }
 }

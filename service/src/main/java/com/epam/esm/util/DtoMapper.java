@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Builder
 @Component
-public class DtoMapper { // Todo Rename to DtoMapper and transfer TadConverter here
+public class DtoMapper {
 
-    public static GiftCertificateDto CertificateToDto(GiftCertificate giftCertificate) {
+    public static GiftCertificateDto certificateToDto(GiftCertificate giftCertificate) {
         return GiftCertificateDto.builder()
                 .id(giftCertificate.getId())
                 .name(giftCertificate.getName())

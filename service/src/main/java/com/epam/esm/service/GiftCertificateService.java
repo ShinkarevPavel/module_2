@@ -14,6 +14,8 @@ public interface GiftCertificateService {
 
     void delete(long id);
 
-    GiftCertificateDto update(GiftCertificateDto giftCertificateDto);
+    void update(GiftCertificateDto giftCertificateDto);
+
+    List<GiftCertificateDto> findByAttributes(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort);
 
 }

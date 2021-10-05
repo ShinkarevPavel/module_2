@@ -13,7 +13,9 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate>{
 
     boolean isPresent(long id);
 
-    GiftCertificate update(Map<String, Object> notNullFields, long id);
+    void update(long id, Map<String, Object> notNullFields);
 
     boolean checkAssociateTable(Long certificateId, Long tagId);
+
+    List<GiftCertificate> findByNameOrDescription(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort);
 }

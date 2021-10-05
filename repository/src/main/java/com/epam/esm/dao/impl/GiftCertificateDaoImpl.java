@@ -16,8 +16,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Repository
@@ -36,6 +34,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String DELETE_BY_ID_FROM_COMMON_TABLE = "DELETE FROM associativetable WHERE id=?";
     private static final String COUNT_BY_ID = "SELECT count(*) FROM gift_certificate WHERE id = ?";
     private static final String FIND_PAR_INTO_COMMON_TABLE = "SELECT count(*) FROM associativetable WHERE gift_id = ? and tag_id=?";
+    private static final String FIND_BY_NAME = SELECT_ALL_GIFT_CERTIFICATES + " WHERE gc.name=?";
 
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateMapper giftCertificateMapper;
@@ -61,8 +60,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public Optional<GiftCertificate> findByName(String name) {
-//        ToDo
-        return null;
+        return jdbcTemplate.query(FIND_BY_NAME, giftMapper, name).stream().findAny();
     }
 
 
@@ -85,7 +83,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public boolean isPresent(long id) {
-       return jdbcTemplate.queryForObject(COUNT_BY_ID, Long.class, id) > 0;
+        return jdbcTemplate.queryForObject(COUNT_BY_ID, Long.class, id) > 0;
     }
 
     @Override
@@ -109,13 +107,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate update(Map<String, Object> notNullFields, long id) {
+    public void update(long id, Map<String, Object> notNullFields) {
         SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
         String updateQuery = sqlQueryBuilder.buildQueryForUpdate(notNullFields);
         List<Object> value = new ArrayList<>(notNullFields.values());
         value.add(id);
-        Object[] parameters = value.toArray(new Object[value.size()]);
-        jdbcTemplate.update(updateQuery, parameters);
-        return findById(id).get();
+        jdbcTemplate.update(updateQuery, value.toArray());
+    }
+
+    @Override
+    public List<GiftCertificate> findByNameOrDescription(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
+        SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
+        System.out.println(sqlQueryBuilder.buildQueryForSearchAndSort(tagName, searchPart, fieldsForSort, orderSort));
+        return jdbcTemplate.query(sqlQueryBuilder.buildQueryForSearchAndSort(tagName, searchPart, fieldsForSort, orderSort), giftMapper, sqlQueryBuilder.getValues().toArray());
     }
 }

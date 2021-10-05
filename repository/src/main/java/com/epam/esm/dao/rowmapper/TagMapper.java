@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 @Component
 public class TagMapper implements RowMapper<Tag> {
-    private static final String TAG_ID = "t.id";
-    private static final String TAG_NAME = "t.name";
+    private static final String TAG_ID = "id";
+    private static final String TAG_NAME = "name";
 
     @Override
     public Tag mapRow(ResultSet resultSet, int i) throws SQLException {

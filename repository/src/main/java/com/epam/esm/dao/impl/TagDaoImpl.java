@@ -3,7 +3,6 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.dao.rowmapper.TagMapper;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,8 @@ import java.util.Optional;
 public class TagDaoImpl implements TagDao {
     private static final String GET_BY_NAME = "SELECT t.id, t.name FROM tags AS t WHERE name=?";
     private static final String CREATE_TAG = "INSERT INTO tags (name) VALUES (?)";
+    private static final String FIND_BY_ID = "SELECT id, name FROM tags WHERE id=?";
+    private static final String FIND_ALL = "SELECT * FROM tags";
 
     @NonNull
     private JdbcTemplate jdbcTemplate;
@@ -44,7 +45,7 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Optional<Tag> findById(long id) {
-        return Optional.empty();
+        return jdbcTemplate.query(FIND_BY_ID, tagMapper, id).stream().findAny();
     }
 
     @Override
@@ -54,7 +55,7 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public List<Tag> findAll() {
-        return null;
+        return jdbcTemplate.query(FIND_ALL, tagMapper);
     }
 
     @Override
