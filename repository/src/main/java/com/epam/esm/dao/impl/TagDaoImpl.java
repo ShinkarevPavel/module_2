@@ -63,7 +63,6 @@ public class TagDaoImpl implements TagDao {
         Optional<Tag> optionalTag = Optional.empty();
         List<Tag> tags = jdbcTemplate.query(GET_BY_NAME, tagMapper, name);
         return tags.isEmpty() ? optionalTag : Optional.of(tags.get(0));
-
     }
 
     @Override

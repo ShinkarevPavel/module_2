@@ -1,9 +1,5 @@
 package com.epam.esm.validator;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
 public class EntityValidator {
     private static final long DURATION_PATTERN = 10;
     private static final String NAME_PATTERN = "[a-zA-Zа-яА-ЯёЁ\\s+]{1,45}";
@@ -24,9 +20,5 @@ public class EntityValidator {
 
     public static boolean isPriceValid (Double price) {
         return price > 0;
-    }
-
-    public static boolean isCreateDateValid(String createDate) {
-        return createDate.equalsIgnoreCase("ASC") || createDate.equalsIgnoreCase("DESC");
     }
 }

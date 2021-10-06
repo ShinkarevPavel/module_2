@@ -21,6 +21,4 @@ public interface BaseDao<T> {
 
     List<T> findAll();
 
-    Optional<T> findByName(String name);
-
 }

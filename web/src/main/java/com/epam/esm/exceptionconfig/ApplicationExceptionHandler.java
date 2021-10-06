@@ -2,8 +2,8 @@ package com.epam.esm.exceptionconfig;
 
 import com.epam.esm.exception.EntityFieldValidationException;
 import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.exception.NoSuchEntityFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +37,17 @@ class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityFieldValidationException.class)
     public ResponseEntity<Object> handleEntryNotFoundException(EntityFieldValidationException e, Locale locale) {
         Map<String, Object> response = new HashMap<>();
-        response.put(ERROR_MESSAGE, messages.getMessage(getMessage(40601), null, locale));
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
         response.put(ERROR_CODE, 40601);
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(NoSuchEntityFieldException.class)
+    public ResponseEntity<Object> handleEntryNotFoundException(NoSuchEntityFieldException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(getMessage(40901), null, locale));
+        response.put(ERROR_CODE, 40901);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     private String getMessage(int errorCode) {

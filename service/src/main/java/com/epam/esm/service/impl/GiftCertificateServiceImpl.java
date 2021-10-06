@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dao.EntityFields;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagCertificateDao;
 import com.epam.esm.dao.TagDao;
@@ -9,6 +10,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityFieldValidationException;
 import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.exception.NoSuchEntityFieldException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DtoMapper;
 import com.epam.esm.validator.EntityValidator;
@@ -25,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.dao.rowmapper.GiftCertificateMapper.*;
+import static com.epam.esm.dao.EntityFields.*;
 
 @Service
 @Builder
@@ -47,7 +49,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto getById(long id) throws NoSuchEntityException{
         return giftCertificateDao.findById(id)
-                .map(DtoMapper :: certificateToDto)
+                .map(DtoMapper::certificateToDto)
                 .orElseThrow(NoSuchEntityException::new);
     }
 
@@ -83,6 +85,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> findByAttributes(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
+        sortFieldValidator(fieldsForSort);
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
         return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
     }
@@ -91,31 +94,29 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Map<String, Object> notNullField = new HashMap<>();
         if (giftCertificateDto.getName() != null ) {
             if (!EntityValidator.isNameValid(giftCertificateDto.getName())) {
-                throw new EntityFieldValidationException();
+                throw new EntityFieldValidationException("error_message.name");
             }
-            notNullField.put(NAME, giftCertificateDto.getName());
+            notNullField.put(ID.getName(), giftCertificateDto.getName());
         }
         if (giftCertificateDto.getDescription() != null) {
             if (!EntityValidator.isDescriptionValid(giftCertificateDto.getDescription())) {
-
-                throw new EntityFieldValidationException();
+                throw new EntityFieldValidationException("error_message.description");
             }
-            notNullField.put(DESCRIPTION, giftCertificateDto.getDescription());
+            notNullField.put(DESCRIPTION.getName(), giftCertificateDto.getDescription());
         }
         if (giftCertificateDto.getPrice() != null) {
             if (!EntityValidator.isPriceValid(giftCertificateDto.getPrice())) {
-
-                throw new EntityFieldValidationException();
+                throw new EntityFieldValidationException("error_message.price");
             }
-            notNullField.put(PRICE, giftCertificateDto.getPrice());
+            notNullField.put(PRICE.getName(), giftCertificateDto.getPrice());
         }
         if (giftCertificateDto.getDuration() != null) {
             if (!EntityValidator.isDurationValid(giftCertificateDto.getDuration())) {
-                throw new EntityFieldValidationException();
+                throw new EntityFieldValidationException("error_message.duration");
             }
-            notNullField.put(DURATION, giftCertificateDto.getDuration());
+            notNullField.put(DURATION.getName(), giftCertificateDto.getDuration());
         }
-        notNullField.put(LUST_UPDATE_DATE, Timestamp.valueOf(LocalDateTime.now()));
+        notNullField.put(LAST_UPDATE_DATE.getName(), Timestamp.valueOf(LocalDateTime.now()));
         return notNullField;
     }
 
@@ -133,4 +134,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         return newCertificateTags;
     }
+
+    private void sortFieldValidator(List<String> fieldsForSort) {
+        fieldsForSort = fieldsForSort.stream().map(String::toLowerCase).collect(Collectors.toList());
+        List<String> fields = EntityFields.getFields();
+        if (!fields.containsAll(fieldsForSort)) {
+            throw new NoSuchEntityFieldException();
+        }
+    }
+
 }

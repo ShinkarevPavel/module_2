@@ -55,11 +55,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public Optional<GiftCertificate> findByName(String name) {
-        return jdbcTemplate.query(FIND_BY_NAME, giftMapper, name).stream().findAny();
-    }
-
-    @Override
     public Optional<GiftCertificate> findById(long id) {
         return jdbcTemplate.query(SELECT_BY_ID, giftMapper, id).stream().findAny();
     }
@@ -86,6 +81,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public List<GiftCertificate> findByCertificateFieldAndSort(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
         SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
-        return jdbcTemplate.query(sqlQueryBuilder.buildQueryForSearchAndSort(tagName, searchPart, fieldsForSort, orderSort), giftMapper, sqlQueryBuilder.getAttributes());
+        return jdbcTemplate.query(sqlQueryBuilder.buildQueryForSearchAndSort(tagName, searchPart, fieldsForSort, orderSort), giftMapper);
     }
 }
