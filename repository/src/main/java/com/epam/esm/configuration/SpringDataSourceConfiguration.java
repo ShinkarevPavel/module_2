@@ -20,17 +20,19 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class SpringDataSourceConfiguration {
 
-    @Value("${db.driver}")
+    @Value("${driver}")
     private String DB_DRIVER;
 
-    @Value("${db.jdbcUrl}")
+    @Value("${jdbcUrl}")
     private String DB_URL;
 
-    @Value("${db.username}")
+    @Value("${username}")
     private String DB_USERNAME;
 
-    @Value("${db.password}")
+    @Value("${password}")
     private String DB_PASSWORD;
+    @Value("${max_pool_size}")
+    private int MAC_POOL_SIZE;
 
     @Bean
     public DataSource dataSource() {
@@ -39,11 +41,7 @@ public class SpringDataSourceConfiguration {
         hikariConfig.setJdbcUrl(DB_URL);
         hikariConfig.setUsername(DB_USERNAME);
         hikariConfig.setPassword(DB_PASSWORD);
-        hikariConfig.setMaximumPoolSize(10);
-        hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", "true");
-        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
-        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
-        hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
+        hikariConfig.setMaximumPoolSize(MAC_POOL_SIZE);
         HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
         return hikariDataSource;
     }

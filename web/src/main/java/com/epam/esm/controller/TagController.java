@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @RestController
-@RequestMapping("/api/tags")
+@RequestMapping("/api/v1/tags")
 public class TagController {
 
     private final TagService tagService;
@@ -22,12 +22,12 @@ public class TagController {
     }
 
     @GetMapping
-    public List<TagDto> showAllTags() {
+    public List<TagDto> getAll() {
         return tagService.getAll();
     }
 
     @GetMapping("/{id}")
-    public TagDto getTagById(@PathVariable Long id) {
+    public TagDto getById(@PathVariable Long id) {
         return tagService.getById(id);
     }
 

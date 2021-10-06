@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.SqlQueryBuilder;
+import com.epam.esm.dao.TagCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
@@ -34,6 +34,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDao giftCertificateDao;
     private TagDao tagDao;
+    private TagCertificateDao tagCertificateDao;
 
     @Override
     public List<GiftCertificateDto> getAll() {
@@ -45,9 +46,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto getById(long id) throws NoSuchEntityException{
-        if (!giftCertificateDao.isPresent(id)) {
-            throw new NoSuchEntityException("Certificate with id=" + id + " is not found");
-        }
         return giftCertificateDao.findById(id)
                 .map(DtoMapper :: certificateToDto)
                 .orElseThrow(NoSuchEntityException::new);
@@ -60,58 +58,60 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate certificate = DtoMapper.dtoToCertificate(giftCertificateDto);
         certificate = giftCertificateDao.create(certificate);
         certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
-        giftCertificateDao.addToAssociateTable(certificate.getId(), certificate.getTags());
+        tagCertificateDao.addToTagCertificateAssociateTable(certificate.getId(), certificate.getTags());
         return DtoMapper.certificateToDto(certificate);
     }
 
     @Transactional
     @Override
     public void delete(long id) {
-        giftCertificateDao.deleteFromAssociateTable(id);
+        tagCertificateDao.deleteFromTagCertificateAssociateTable(id);
         giftCertificateDao.delete(id);
     }
 
     @Transactional
     @Override
-    public void update(GiftCertificateDto giftCertificateDto) {
-        if (!giftCertificateDao.isPresent(giftCertificateDto.getId()) || giftCertificateDto.getId() == null) {
-            throw new NoSuchEntityException("There is no for update certificate with id=" + giftCertificateDto.getId());
+    public void update(GiftCertificateDto giftCertificateDto) throws NoSuchEntityException{
+        if (!giftCertificateDao.findById(giftCertificateDto.getId()).isPresent() || giftCertificateDto.getId() == null) {
+            throw new NoSuchEntityException();
         }
-        Map<String, Object> notNullField = fieldCheck(giftCertificateDto);
+        Map<String, Object> notNullField = fieldValidator(giftCertificateDto);
         List<Tag> certificateNewTags = certificateTagsChecker(giftCertificateDto.getTags(), giftCertificateDto.getId());
-        giftCertificateDao.addToAssociateTable(giftCertificateDto.getId(), certificateNewTags);
+        tagCertificateDao.addToTagCertificateAssociateTable(giftCertificateDto.getId(), certificateNewTags);
         giftCertificateDao.update(giftCertificateDto.getId(), notNullField);
     }
 
     @Override
     public List<GiftCertificateDto> findByAttributes(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
-        List<GiftCertificate> giftCertificates = giftCertificateDao.findByNameOrDescription(tagName, searchPart, fieldsForSort, orderSort);
+        List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
         return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
     }
 
-    private Map<String, Object> fieldCheck(GiftCertificateDto giftCertificateDto) {
+    private Map<String, Object> fieldValidator(GiftCertificateDto giftCertificateDto) {
         Map<String, Object> notNullField = new HashMap<>();
         if (giftCertificateDto.getName() != null ) {
             if (!EntityValidator.isNameValid(giftCertificateDto.getName())) {
-                throw new EntityFieldValidationException("Value '" + giftCertificateDto.getName() + "' for name field is not valid");
+                throw new EntityFieldValidationException();
             }
             notNullField.put(NAME, giftCertificateDto.getName());
         }
         if (giftCertificateDto.getDescription() != null) {
             if (!EntityValidator.isDescriptionValid(giftCertificateDto.getDescription())) {
-                throw new EntityFieldValidationException("Value '" + giftCertificateDto.getDescription() + "' for description field is not valid");
+
+                throw new EntityFieldValidationException();
             }
             notNullField.put(DESCRIPTION, giftCertificateDto.getDescription());
         }
         if (giftCertificateDto.getPrice() != null) {
             if (!EntityValidator.isPriceValid(giftCertificateDto.getPrice())) {
-                throw new EntityFieldValidationException("Value '" + giftCertificateDto.getPrice() + "' for price field is not valid");
+
+                throw new EntityFieldValidationException();
             }
             notNullField.put(PRICE, giftCertificateDto.getPrice());
         }
         if (giftCertificateDto.getDuration() != null) {
             if (!EntityValidator.isDurationValid(giftCertificateDto.getDuration())) {
-                throw new EntityFieldValidationException("Value '" + giftCertificateDto.getDuration() + "' for duration field is not valid");
+                throw new EntityFieldValidationException();
             }
             notNullField.put(DURATION, giftCertificateDto.getDuration());
         }
@@ -124,9 +124,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificateTags != null && !certificateTags.isEmpty()) {
             certificateTags.forEach(t -> {
                 if (t.getName() != null) {
-//                    Todo ? Optional in this place.
                     Tag tag = tagDao.findOrCreateTag(DtoMapper.dtoToTag(t));
-                    if (!giftCertificateDao.checkAssociateTable(certificateId, tag.getId())) {
+                    if (!tagCertificateDao.checkTagCertificateAssociateTable(certificateId, tag.getId())) {
                         newCertificateTags.add(tag);
                     }
                 }

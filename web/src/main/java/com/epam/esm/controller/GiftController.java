@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @RestController
-@RequestMapping("/api/gifts")
+@RequestMapping("/api/v1/certificates")
 public class GiftController {
 
     private final GiftCertificateService giftCertificateService;
@@ -23,7 +23,7 @@ public class GiftController {
     }
 
     @GetMapping
-    public List<GiftCertificateDto> showAllCertificates() {
+    public List<GiftCertificateDto> getAll() {
         List<GiftCertificateDto> certificates = giftCertificateService.getAll();
         return certificates;
     }

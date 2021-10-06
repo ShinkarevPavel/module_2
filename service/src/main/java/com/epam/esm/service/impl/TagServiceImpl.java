@@ -11,7 +11,6 @@ import lombok.Builder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,11 +33,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto getById(Long id) {
-        Optional<Tag> optionalTag = tagDao.findById(id);
-        if (!optionalTag.isPresent()) {
-            throw new NoSuchEntityException("Tag with id=" + id + " not found");
-        }
-        return DtoMapper.TagToDto(optionalTag.get());
+        return tagDao.findById(id)
+                .map(DtoMapper::TagToDto)
+                .orElseThrow(NoSuchEntityException::new);
     }
 
     @Override
@@ -51,10 +48,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto getByName(String name) {
-        Optional<Tag> optionalTag = tagDao.findByName(name);
-        if (optionalTag.isEmpty()) {
-            throw new NoSuchEntityException("Tah with name=" + name + " not found");
-        }
-        return DtoMapper.TagToDto(optionalTag.get());
+        return tagDao.findByName(name)
+                .map(DtoMapper::TagToDto)
+                .orElseThrow(NoSuchEntityException::new);
     }
 }

@@ -2,16 +2,10 @@ package com.epam.esm.entity;
 
 import com.epam.esm.configuration.SpringDataSourceConfiguration;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.SqlQueryBuilder;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
-import com.epam.esm.dao.rowmapper.GiftCertificateMapper;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.swing.text.html.parser.Entity;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class Main {
@@ -21,13 +15,18 @@ public class Main {
         GiftCertificateDao dao = context.getBean("giftCertificateDaoImpl", GiftCertificateDaoImpl.class);
 
         String tagName = "JAVA";
-        String part = "java";
+        String part = "av";
         List<String> fields = new ArrayList<>();
-//        fields.add("gc.name");
-//        fields.add("gc.duration");
-        List<String> sort = Arrays.asList("DESC");
-
-        System.out.println(dao.findByNameOrDescription(tagName, null, fields, sort));
+        fields.add("gc.name");
+        fields.add("gc.duration");
+        List<String> sort = new ArrayList<>();
+        sort.add("DESC");
+//        sort.add("ASC");
+        System.out.println(dao.findByCertificateFieldAndSort("", "", null, null));
+        System.out.println("--------------------");
+        System.out.println("--------------------");
+        System.out.println("--------------------");
+        System.out.println("--------------------");
 
 //        System.out.println(dao.findAll());
 //        Map<String, Object> map = new HashMap<>();
