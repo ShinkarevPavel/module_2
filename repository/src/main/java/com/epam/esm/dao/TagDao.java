@@ -11,5 +11,7 @@ public interface TagDao extends BaseDao<Tag>{
 
     Tag findOrCreateTag(Tag tag);
 
+    List<Tag> findAll();
+
     Optional<Tag> findByName(String name);
 }

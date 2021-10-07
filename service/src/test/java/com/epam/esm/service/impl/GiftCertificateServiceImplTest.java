@@ -92,13 +92,6 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void getAll() {
-        given(giftCertificateDao.findAll()).willReturn(giftCertificates);
-        List<GiftCertificateDto> giftCertificateDtos = giftCertificateService.getAll();
-        Assertions.assertEquals(1, giftCertificateDtos.size());
-    }
-
-    @Test
     void getById() {
         given(giftCertificateDao.findById(TEST_ID)).willReturn(Optional.of(giftCertificate));
         GiftCertificateDto actualGiftCertificateDto = giftCertificateService.getById(TEST_ID);
@@ -122,7 +115,7 @@ class GiftCertificateServiceImplTest {
 
 
     @Test
-    void notFoundCertificateBuID() {
+    void notFoundCertificateByID() {
         given(giftCertificateDao.findById(NOT_VALID_TAG_ID)).willReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> giftCertificateService.getById(NOT_VALID_TAG_ID));
     }

@@ -16,5 +16,4 @@ public interface TagService {
     TagDto getByName(String name);
 
     List<TagDto> getAll();
-
 }

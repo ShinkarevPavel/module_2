@@ -46,6 +46,14 @@
             <version>3.9.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.3.9</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.mockito</groupId>

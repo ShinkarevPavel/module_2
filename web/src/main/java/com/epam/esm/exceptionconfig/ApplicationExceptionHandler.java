@@ -1,6 +1,7 @@
 package com.epam.esm.exceptionconfig;
 
 import com.epam.esm.exception.EntityFieldValidationException;
+import com.epam.esm.exception.EntryAlreadyExistsException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.exception.NoSuchEntityFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,14 @@ class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleEntryNotFoundException(NoSuchEntityFieldException e, Locale locale) {
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, messages.getMessage(getMessage(40901), null, locale));
+        response.put(ERROR_CODE, 40901);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EntryAlreadyExistsException.class)
+    public ResponseEntity<Object> handleEntryNotFoundException(EntryAlreadyExistsException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
         response.put(ERROR_CODE, 40901);
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }

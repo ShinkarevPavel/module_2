@@ -1,5 +1,6 @@
 package com.epam.esm.dao.rowmapper;
 
+import com.epam.esm.dao.EntityFields;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import lombok.Builder;
@@ -13,11 +14,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static com.epam.esm.dao.EntityFields.*;
+
 @Component
 @Builder
 @RequiredArgsConstructor
 public class GiftMapper implements ResultSetExtractor<List<GiftCertificate>> {
-    private final String ID = "id";
     @NonNull
     private GiftCertificateMapper giftCertificateMapper;
     @NonNull
@@ -26,28 +28,20 @@ public class GiftMapper implements ResultSetExtractor<List<GiftCertificate>> {
 
     @Override
     public List<GiftCertificate> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-        Map<Long, GiftCertificate> giftCertificates = new HashMap<>();
-        LinkedHashSet<Long> ids = new LinkedHashSet<>();
+        Map<Long, GiftCertificate> giftCertificates = new LinkedHashMap<>();
         while (resultSet.next()) {
-            Long id = resultSet.getLong(ID);
-            ids.add(id);
+            Long id = resultSet.getLong(ID.getName());
             GiftCertificate giftCertificate = giftCertificates.get(id);
             if (giftCertificate == null) {
                 giftCertificate = giftCertificateMapper.mapRow(resultSet, 1);
             }
             Tag tag = tagMapper.mapRow(resultSet, 8);
-            giftCertificate.addTag(tag);
+            if (tag.getName() != null) {
+                giftCertificate.addTag(tag);
+            }
             giftCertificates.put(giftCertificate.getId(), giftCertificate);
         }
-        return getCertificates(ids,giftCertificates);
-    }
 
-
-    private List<GiftCertificate> getCertificates(LinkedHashSet<Long> ids, Map<Long, GiftCertificate> giftCertificates ) {
-        List<GiftCertificate> certificates = new ArrayList<>();
-        for (Long id : ids) {
-            certificates.add(giftCertificates.get(id));
-        }
-        return certificates;
+        return giftCertificates.values().stream().toList();
     }
 }

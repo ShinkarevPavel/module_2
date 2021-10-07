@@ -7,6 +7,7 @@ import com.epam.esm.entity.Tag;
 import lombok.Builder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Builder
@@ -22,7 +23,7 @@ public class DtoMapper {
                 .price(giftCertificate.getPrice())
                 .createDate(giftCertificate.getCreateDate())
                 .lastUpdateDate(giftCertificate.getLastUpdateDate())
-                .tags(giftCertificate.getTags().stream().map(DtoMapper::TagToDto).collect(Collectors.toList()))
+                .tags(giftCertificate.getTags() != null ? giftCertificate.getTags().stream().map(DtoMapper::TagToDto).collect(Collectors.toList()) : new ArrayList<>())
                 .build();
     }
 
@@ -35,7 +36,7 @@ public class DtoMapper {
                 .duration(giftCertificateDto.getDuration())
                 .createDate(giftCertificateDto.getCreateDate())
                 .lastUpdateDate(giftCertificateDto.getLastUpdateDate())
-                .tags(giftCertificateDto.getTags().stream().map(DtoMapper::dtoToTag).collect(Collectors.toList()))
+                .tags(giftCertificateDto.getTags() != null ? giftCertificateDto.getTags().stream().map(DtoMapper::dtoToTag).collect(Collectors.toList()) : new ArrayList<>())
                 .build();
     }
 

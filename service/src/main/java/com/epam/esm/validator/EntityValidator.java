@@ -2,8 +2,8 @@ package com.epam.esm.validator;
 
 public class EntityValidator {
     private static final long DURATION_PATTERN = 10;
-    private static final String NAME_PATTERN = "[a-zA-Zа-яА-ЯёЁ\\s+]{1,45}";
-    private static final String DESCRIPTION_PATTERN = "[\\wа-яА-ЯёЁ\\s+]{1,80}";
+    private static final String NAME_PATTERN = "[a-zA-Zа-яА-ЯёЁ\\s+]{0,45}";
+    private static final String DESCRIPTION_PATTERN = "[\\wа-яА-ЯёЁ\\s+]{0,80}";
 
 
     public static boolean isNameValid(String name) {

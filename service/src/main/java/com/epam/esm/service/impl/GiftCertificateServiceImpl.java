@@ -36,14 +36,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private TagCertificateDao tagCertificateDao;
 
     @Override
-    public List<GiftCertificateDto> getAll() {
-        List<GiftCertificate> giftCertificateList = giftCertificateDao.findAll();
-        return giftCertificateList.stream()
-                .map(DtoMapper::certificateToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public GiftCertificateDto getById(long id) throws NoSuchEntityException{
         return giftCertificateDao.findById(id)
                 .map(DtoMapper::certificateToDto)
@@ -56,8 +48,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         GiftCertificate certificate = DtoMapper.dtoToCertificate(giftCertificateDto);
         certificate = giftCertificateDao.create(certificate);
-        certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
-        tagCertificateDao.addToTagCertificateAssociateTable(certificate.getId(), certificate.getTags());
+        if (certificate.getTags() != null) {
+            certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
+            tagCertificateDao.addToTagCertificateAssociateTable(certificate.getId(), certificate.getTags());
+        }
         return DtoMapper.certificateToDto(certificate);
     }
 
@@ -82,7 +76,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> findByAttributes(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
-        sortFieldValidator(fieldsForSort, orderSort);
+        fieldsForSort = sortFieldValidator(fieldsForSort);
+        orderSort = orderSortValidator(orderSort);
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
         return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
     }
@@ -123,7 +118,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             certificateTags.forEach(t -> {
                 if (t.getName() != null) {
                     Tag tag = tagDao.findOrCreateTag(DtoMapper.dtoToTag(t));
-                    if (!tagCertificateDao.checkTagCertificateAssociateTable(certificateId, tag.getId())) {
+                    if (!tagCertificateDao.isPresentTagAndCertificateInAssociateTable(certificateId, tag.getId())) {
                         newCertificateTags.add(tag);
                     }
                 }
@@ -132,7 +127,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return newCertificateTags;
     }
 
-    private void sortFieldValidator(List<String> fieldsForSort, List<String> orderSort) {
+    private List<String> sortFieldValidator(List<String> fieldsForSort) {
         if (fieldsForSort != null) {
             fieldsForSort = fieldsForSort.stream().map(String::toLowerCase).collect(Collectors.toList());
             List<String> fields = EntityFields.getFields();
@@ -140,14 +135,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 throw new NoSuchEntityFieldException();
             }
         }
+        return fieldsForSort;
+    }
+
+    private List<String> orderSortValidator(List<String> orderSort) {
         if (orderSort != null) {
             orderSort = orderSort.stream().map(String::toLowerCase).collect(Collectors.toList());
-            System.out.println(orderSort);
-            if (!orderSort.contains("desc")) {
-                if (!orderSort.contains("asc")) {
+            orderSort.forEach(o -> {
+                if (!o.equals("desc") && !o.equals("asc")) {
                     throw new NoSuchEntityFieldException();
                 }
-            }
+            });
         }
+        return orderSort;
     }
+
 }

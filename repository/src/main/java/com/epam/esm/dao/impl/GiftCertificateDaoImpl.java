@@ -65,11 +65,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return jdbcTemplate.query(SELECT_ALL_GIFT_CERTIFICATES, giftMapper);
-    }
-
-    @Override
     public void update(long id, Map<String, Object> notNullFields) {
         SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
         String updateQuery = sqlQueryBuilder.buildQueryForUpdate(notNullFields);

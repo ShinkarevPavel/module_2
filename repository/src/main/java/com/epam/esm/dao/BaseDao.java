@@ -19,6 +19,5 @@ public interface BaseDao<T> {
 
     void delete(long id);
 
-    List<T> findAll();
 
 }

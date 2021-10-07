@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 @Component
 public interface GiftCertificateService {
-    List<GiftCertificateDto> getAll();
 
     GiftCertificateDto getById(long id);
 

@@ -4,12 +4,10 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Component
 @RestController
 @RequestMapping("/api/v1/certificates")
 public class GiftController {
@@ -19,12 +17,6 @@ public class GiftController {
     @Autowired
     public GiftController(GiftCertificateService giftCertificateService) {
         this.giftCertificateService = giftCertificateService;
-    }
-
-    @GetMapping
-    public List<GiftCertificateDto> getAll() {
-        List<GiftCertificateDto> certificates = giftCertificateService.getAll();
-        return certificates;
     }
 
     @GetMapping("/{id}")
@@ -38,13 +30,13 @@ public class GiftController {
         return giftCertificateService.create(certificateDto);
     }
 
-    @PutMapping
+    @PatchMapping //
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody GiftCertificateDto giftCertificateDto) {
         giftCertificateService.update(giftCertificateDto);
     }
 
-    @GetMapping("/param")
+    @GetMapping
     public List<GiftCertificateDto> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
                                                      @RequestParam(required = false, name = "searchPart") String searchPart,
                                                      @RequestParam(required = false, name = "fieldsForSort") List<String> fieldsForSort,

@@ -14,6 +14,7 @@ public class TagCertificateDao {
     private static final String CREATE_PAR_INTO_COMMON_TABLE = "INSERT INTO tag_certificate_associate (gift_id, tag_id) VALUES (?, ?)";
     private static final String FIND_PAR_INTO_COMMON_TABLE = "SELECT count(*) FROM tag_certificate_associate WHERE gift_id = ? and tag_id=?";
     private static final String DELETE_BY_ID_FROM_COMMON_TABLE = "DELETE FROM tag_certificate_associate WHERE id=?";
+    private static final String FIND_BY_TAG_ID_FROM_COMMON_TABLE = "SELECT count(*) FROM tag_certificate_associate WHERE tag_id=?";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -22,8 +23,8 @@ public class TagCertificateDao {
     }
 
 
-    public boolean checkTagCertificateAssociateTable(Long certificateId, Long tagId) {
-        return jdbcTemplate.queryForObject(FIND_PAR_INTO_COMMON_TABLE, Integer.class, certificateId, tagId) > 0;
+    public boolean isPresentTagAndCertificateInAssociateTable(Long certificateId, Long tagId) {
+        return jdbcTemplate.queryForObject(FIND_BY_TAG_ID_FROM_COMMON_TABLE, Integer.class, certificateId, tagId) > 0;
     }
 
 
@@ -36,5 +37,9 @@ public class TagCertificateDao {
                 return statement;
             });
         }
+    }
+
+    public boolean isPresentRowByTadId(Long id) {
+        return jdbcTemplate.queryForObject(FIND_BY_TAG_ID_FROM_COMMON_TABLE, Integer.class, id) > 0;
     }
 }
