@@ -48,7 +48,6 @@ public class GiftMapper implements ResultSetExtractor<List<GiftCertificate>> {
         for (Long id : ids) {
             certificates.add(giftCertificates.get(id));
         }
-        System.out.println(certificates);
         return certificates;
     }
 }
