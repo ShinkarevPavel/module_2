@@ -18,7 +18,7 @@ import java.util.List;
 @Configuration
 @ComponentScan(basePackages ="com.epam.esm")
 @EnableWebMvc
-public class MyConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

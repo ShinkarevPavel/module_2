@@ -14,8 +14,6 @@ import com.epam.esm.exception.NoSuchEntityFieldException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DtoMapper;
 import com.epam.esm.validator.EntityValidator;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +25,17 @@ import java.util.stream.Collectors;
 import static com.epam.esm.dao.EntityFields.*;
 
 @Service
-@Builder
-@AllArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDao giftCertificateDao;
     private TagDao tagDao;
     private TagCertificateDao tagCertificateDao;
+
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao, TagCertificateDao tagCertificateDao) {
+        this.giftCertificateDao = giftCertificateDao;
+        this.tagDao = tagDao;
+        this.tagCertificateDao = tagCertificateDao;
+    }
 
     @Override
     public GiftCertificateDto getById(long id) throws NoSuchEntityException{
@@ -65,7 +67,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public void update(GiftCertificateDto giftCertificateDto) throws NoSuchEntityException{
-        if (!giftCertificateDao.findById(giftCertificateDto.getId()).isPresent() || giftCertificateDto.getId() == null) {
+        if (giftCertificateDao.findById(giftCertificateDto.getId()).isEmpty() || giftCertificateDto.getId() == null) {
             throw new NoSuchEntityException();
         }
         Map<String, Object> notNullField = fieldValidator(giftCertificateDto);

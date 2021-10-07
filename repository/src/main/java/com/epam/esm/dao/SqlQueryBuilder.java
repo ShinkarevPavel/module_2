@@ -1,14 +1,11 @@
 package com.epam.esm.dao;
 
-import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
-@Builder
-@NoArgsConstructor
-@Data
-@AllArgsConstructor
+@Component
 public class SqlQueryBuilder {
     private String MAIN_PART = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
             "gc.last_update_date, t.id, t.name FROM gift_certificate gc LEFT JOIN tag_certificate_associate " +
@@ -36,7 +33,7 @@ public class SqlQueryBuilder {
                 sb.append(INJECT_SYMBOLS);
                 sb.append(WHERE);
                 sb.append(EntityFields.ID.getName());
-                sb.append(getINJECT_SYMBOLS());
+                sb.append(INJECT_SYMBOLS);
             }
         }
         return sb.toString();

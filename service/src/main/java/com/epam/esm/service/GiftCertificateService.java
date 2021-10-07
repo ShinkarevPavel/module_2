@@ -1,10 +1,9 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
-@Component
+
 public interface GiftCertificateService {
 
     GiftCertificateDto getById(long id);

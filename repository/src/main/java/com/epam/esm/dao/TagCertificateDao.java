@@ -1,7 +1,6 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
-import lombok.Builder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component
-@Builder
 public class TagCertificateDao {
     private static final String CREATE_PAR_INTO_COMMON_TABLE = "INSERT INTO tag_certificate_associate (gift_id, tag_id) VALUES (?, ?)";
     private static final String FIND_PAR_INTO_COMMON_TABLE = "SELECT count(*) FROM tag_certificate_associate WHERE gift_id = ? and tag_id=?";
@@ -17,6 +15,10 @@ public class TagCertificateDao {
     private static final String FIND_BY_TAG_ID_FROM_COMMON_TABLE = "SELECT count(*) FROM tag_certificate_associate WHERE tag_id=?";
 
     private JdbcTemplate jdbcTemplate;
+
+    public TagCertificateDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void deleteFromTagCertificateAssociateTable(long id) {
         jdbcTemplate.update(DELETE_BY_ID_FROM_COMMON_TABLE, id);
@@ -39,7 +41,7 @@ public class TagCertificateDao {
         }
     }
 
-    public boolean isPresentRowByTadId(Long id) {
+    public boolean isPresentRowByTagId(Long id) {
         return jdbcTemplate.queryForObject(FIND_BY_TAG_ID_FROM_COMMON_TABLE, Integer.class, id) > 0;
     }
 }

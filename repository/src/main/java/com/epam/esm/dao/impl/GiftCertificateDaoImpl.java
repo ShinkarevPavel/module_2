@@ -5,9 +5,6 @@ import com.epam.esm.dao.SqlQueryBuilder;
 import com.epam.esm.dao.rowmapper.GiftCertificateMapper;
 import com.epam.esm.dao.rowmapper.GiftMapper;
 import com.epam.esm.entity.GiftCertificate;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -19,8 +16,6 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Repository
-@Builder
-@RequiredArgsConstructor
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String SELECT_ALL_GIFT_CERTIFICATES = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
             "gc.last_update_date,t.id, t.name FROM gift_certificate AS gc LEFT JOIN tag_certificate_associate " +
@@ -29,13 +24,17 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String CREATE_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String SELECT_BY_ID = SELECT_ALL_GIFT_CERTIFICATES + " WHERE gc.id=?";
     private static final String DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id=?";
-    private static final String COUNT_BY_ID = "SELECT count(*) FROM gift_certificate WHERE id = ?";
-    private static final String FIND_BY_NAME = SELECT_ALL_GIFT_CERTIFICATES + " WHERE gc.name=?";
 
-    private final JdbcTemplate jdbcTemplate;
-    private final GiftCertificateMapper giftCertificateMapper;
-    private final GiftMapper giftMapper;
 
+    private JdbcTemplate jdbcTemplate;
+    private GiftCertificateMapper giftCertificateMapper;
+    private GiftMapper giftMapper;
+
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, GiftCertificateMapper giftCertificateMapper, GiftMapper giftMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.giftCertificateMapper = giftCertificateMapper;
+        this.giftMapper = giftMapper;
+    }
 
     @Override
     public GiftCertificate create(GiftCertificate certificate) {

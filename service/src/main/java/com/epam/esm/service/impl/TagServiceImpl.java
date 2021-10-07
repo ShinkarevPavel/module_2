@@ -36,10 +36,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void delete(Long id) {
-        if (!tagDao.findById(id).isPresent()) {
+        if (tagDao.findById(id).isEmpty()) {
             throw new NoSuchEntityException();
         }
-        if (tagCertificateDao.isPresentRowByTadId(id)) {
+        if (tagCertificateDao.isPresentRowByTagId(id)) {
             throw new NotAcceptableActionException("error_message.forbidden");
         }
         tagDao.delete(id);

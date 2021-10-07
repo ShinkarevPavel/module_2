@@ -4,13 +4,12 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import lombok.Builder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-@Builder
+
 @Component
 public class DtoMapper {
 

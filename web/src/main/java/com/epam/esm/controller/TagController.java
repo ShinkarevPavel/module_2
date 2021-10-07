@@ -4,14 +4,11 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Component
-@RestController
-@RequestMapping("/api/v1/tags")
+@RestController("/api/v1/tags")
 public class TagController {
 
     private final TagService tagService;

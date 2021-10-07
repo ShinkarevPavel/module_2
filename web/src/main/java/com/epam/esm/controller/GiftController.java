@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/certificates")
+@RestController("/api/v1/certificates")
 public class GiftController {
 
     private final GiftCertificateService giftCertificateService;

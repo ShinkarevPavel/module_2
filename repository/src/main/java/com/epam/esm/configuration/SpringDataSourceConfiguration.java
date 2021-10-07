@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -32,7 +31,7 @@ public class SpringDataSourceConfiguration {
     @Value("${password}")
     private String DB_PASSWORD;
     @Value("${max_pool_size}")
-    private int MAC_POOL_SIZE;
+    private int MAX_POOL_SIZE;
 
     @Bean
     public DataSource dataSource() {
@@ -41,7 +40,7 @@ public class SpringDataSourceConfiguration {
         hikariConfig.setJdbcUrl(DB_URL);
         hikariConfig.setUsername(DB_USERNAME);
         hikariConfig.setPassword(DB_PASSWORD);
-        hikariConfig.setMaximumPoolSize(MAC_POOL_SIZE);
+        hikariConfig.setMaximumPoolSize(MAX_POOL_SIZE);
         HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
         return hikariDataSource;
     }

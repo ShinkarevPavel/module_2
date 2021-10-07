@@ -3,13 +3,10 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.dao.rowmapper.TagMapper;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -17,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Builder
-@RequiredArgsConstructor
-@Component
+@Repository
 public class TagDaoImpl implements TagDao {
     private static final String GET_BY_NAME = "SELECT t.id, t.name FROM tags AS t WHERE name=?";
     private static final String CREATE_TAG = "INSERT INTO tags (name) VALUES (?)";
@@ -27,10 +22,14 @@ public class TagDaoImpl implements TagDao {
     private static final String FIND_ALL = "SELECT t.id, t.name FROM tags AS t";
     private static final String DELETE_BY_ID = "DELETE FROM tags WHERE id=?";
 
-    @NonNull
+
     private JdbcTemplate jdbcTemplate;
-    @NonNull
     private TagMapper tagMapper;
+
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, TagMapper tagMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.tagMapper = tagMapper;
+    }
 
     @Override
     public Tag create(Tag tag) {

@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.configuration.ServiceConfiguration;
-import com.epam.esm.dao.TagDao;
+import com.epam.esm.configuration.SpringDataSourceConfiguration;
+import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.util.DtoMapper;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -21,8 +21,9 @@ import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = ServiceConfiguration.class)
+@ExtendWith({MockitoExtension.class,
+                SpringExtension.class})
+@ContextConfiguration(classes = SpringDataSourceConfiguration.class)
 class TagServiceImplTest {
 
     private static final long FIRST_TAG_ID = 1;
@@ -42,8 +43,9 @@ class TagServiceImplTest {
     @InjectMocks
     private TagServiceImpl tagService;
 
+
     @Mock
-    private TagDao tagDao;
+    private TagDaoImpl tagDao;
 
     @Mock
     private DtoMapper dtoMapper;
@@ -86,5 +88,21 @@ class TagServiceImplTest {
         given(tagDao.findByName(firstTag.getName())).willReturn(Optional.of(firstTag));
         TagDto actual = tagService.getByName(firstTag.getName());
         Assertions.assertEquals(DtoMapper.dtoToTag(actual), firstTag);
+    }
+
+    @Test
+    void findById() {
+        given(tagDao.findById(FIRST_TAG_ID)).willReturn(Optional.of(firstTag));
+        TagDto actual = tagService.getById(FIRST_TAG_ID);
+        Assertions.assertEquals(DtoMapper.dtoToTag(actual), firstTag);
+    }
+
+    @Test
+    void getAll() {
+        given(tagDao.findAll()).willReturn(tags);
+        List<TagDto> actual = tagService.getAll();
+
+        Assertions.assertEquals(actual.get(0).getName(), tagsDto.get(0).getName());
+        Assertions.assertEquals(actual.get(1).getName(), tagsDto.get(1).getName());
     }
 }
