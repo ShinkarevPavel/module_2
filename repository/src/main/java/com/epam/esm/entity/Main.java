@@ -15,19 +15,31 @@ public class Main {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringDataSourceConfiguration.class);
         GiftCertificateDao dao = context.getBean("giftCertificateDaoImpl", GiftCertificateDaoImpl.class);
-        SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
-        String tagName = "IT";
-        String partSearch = "cool";
-        List<String> searchFields = new ArrayList<>();
-        searchFields.add("gc.name");
-        searchFields.add("description");
-         searchFields.stream().map(String::toUpperCase).collect(Collectors.toList());
-        System.out.println(searchFields);
+        LinkedHashSet<Long> ids = new LinkedHashSet<>();
+        ids.add(12l);
+        ids.add(2l);
+        ids.add(2l);
+        ids.add(12l);
+        ids.add(12l);
+        ids.add(1l);
+        ids.add(1l);
+        System.out.println(ids);
+        LinkedHashSet<String> s = new LinkedHashSet<String>();
+
+//        SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
+//        String tagName = "IT";
+//        String partSearch = "cool";
+//        List<String> searchFields = new ArrayList<>();
+//        searchFields.add("gc.name");
+//        searchFields.add("description");
+//         searchFields.stream().map(String::toUpperCase).collect(Collectors.toList());
+//        System.out.println(searchFields);
 //        List<String> sortingBy = new ArrayList<>();
 //        sortingBy.add("DESC");
 //        System.out.println(sqlQueryBuilder.buildQueryForSearchAndSort(tagName, partSearch, searchFields, sortingBy));
 //        System.out.println("----------------------------------");
 //        System.out.println(dao.findByCertificateFieldAndSort(tagName, partSearch, searchFields, sortingBy));
+
 
     }
 }

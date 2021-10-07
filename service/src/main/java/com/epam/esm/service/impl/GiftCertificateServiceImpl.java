@@ -21,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.epam.esm.dao.EntityFields.*;
@@ -85,7 +82,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> findByAttributes(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
-        sortFieldValidator(fieldsForSort);
+        sortFieldValidator(fieldsForSort, orderSort);
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
         return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
     }
@@ -135,12 +132,22 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return newCertificateTags;
     }
 
-    private void sortFieldValidator(List<String> fieldsForSort) {
-        fieldsForSort = fieldsForSort.stream().map(String::toLowerCase).collect(Collectors.toList());
-        List<String> fields = EntityFields.getFields();
-        if (!fields.containsAll(fieldsForSort)) {
-            throw new NoSuchEntityFieldException();
+    private void sortFieldValidator(List<String> fieldsForSort, List<String> orderSort) {
+        if (fieldsForSort != null) {
+            fieldsForSort = fieldsForSort.stream().map(String::toLowerCase).collect(Collectors.toList());
+            List<String> fields = EntityFields.getFields();
+            if (!fields.containsAll(fieldsForSort)) {
+                throw new NoSuchEntityFieldException();
+            }
+        }
+        if (orderSort != null) {
+            orderSort = orderSort.stream().map(String::toLowerCase).collect(Collectors.toList());
+            System.out.println(orderSort);
+            if (!orderSort.contains("desc")) {
+                if (!orderSort.contains("asc")) {
+                    throw new NoSuchEntityFieldException();
+                }
+            }
         }
     }
-
 }

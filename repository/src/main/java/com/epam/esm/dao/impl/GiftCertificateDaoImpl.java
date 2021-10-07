@@ -7,6 +7,7 @@ import com.epam.esm.dao.rowmapper.GiftMapper;
 import com.epam.esm.entity.GiftCertificate;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -20,7 +21,6 @@ import java.util.*;
 @Repository
 @Builder
 @RequiredArgsConstructor
-
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String SELECT_ALL_GIFT_CERTIFICATES = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
             "gc.last_update_date,t.id, t.name FROM gift_certificate AS gc LEFT JOIN tag_certificate_associate " +

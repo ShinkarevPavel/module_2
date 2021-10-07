@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Builder
@@ -29,8 +27,10 @@ public class GiftMapper implements ResultSetExtractor<List<GiftCertificate>> {
     @Override
     public List<GiftCertificate> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         Map<Long, GiftCertificate> giftCertificates = new HashMap<>();
+        LinkedHashSet<Long> ids = new LinkedHashSet<>();
         while (resultSet.next()) {
             Long id = resultSet.getLong(ID);
+            ids.add(id);
             GiftCertificate giftCertificate = giftCertificates.get(id);
             if (giftCertificate == null) {
                 giftCertificate = giftCertificateMapper.mapRow(resultSet, 1);
@@ -39,6 +39,16 @@ public class GiftMapper implements ResultSetExtractor<List<GiftCertificate>> {
             giftCertificate.addTag(tag);
             giftCertificates.put(giftCertificate.getId(), giftCertificate);
         }
-        return giftCertificates.values().stream().toList();
+        return getCertificates(ids,giftCertificates);
+    }
+
+
+    private List<GiftCertificate> getCertificates(LinkedHashSet<Long> ids, Map<Long, GiftCertificate> giftCertificates ) {
+        List<GiftCertificate> certificates = new ArrayList<>();
+        for (Long id : ids) {
+            certificates.add(giftCertificates.get(id));
+        }
+        System.out.println(certificates);
+        return certificates;
     }
 }
