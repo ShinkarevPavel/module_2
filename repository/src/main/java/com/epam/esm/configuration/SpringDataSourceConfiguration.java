@@ -49,11 +49,4 @@ public class SpringDataSourceConfiguration {
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
     }
-
-    @Bean(name = "transactionManager")
-    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-        dataSourceTransactionManager.setDataSource(dataSource);
-        return dataSourceTransactionManager;
-    }
 }

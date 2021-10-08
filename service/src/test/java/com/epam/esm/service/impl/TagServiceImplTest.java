@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.configuration.SpringDataSourceConfiguration;
+import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +19,14 @@ import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith({MockitoExtension.class,
-                SpringExtension.class})
-@ContextConfiguration(classes = SpringDataSourceConfiguration.class)
+
+@ExtendWith(MockitoExtension.class)
 class TagServiceImplTest {
 
-    private static final long FIRST_TAG_ID = 1;
-    private static final long SECOND_TAG_ID = 2;
+    private static final long FIRST_TAG_ID = 112;
+    private static final long SECOND_TAG_ID = 223;
     private static final long NEW_TAG_ID = 12;
-    private static final String FIRST_TAG_NAME = "IT";
+    private static final String FIRST_TAG_NAME = "ITTP";
     private static final String SECOND_TAG_NAME = "HR";
     private static final String NEW_TAG_NAME = "Java";
     private TagDto firstTagDto;
@@ -43,18 +40,21 @@ class TagServiceImplTest {
     @InjectMocks
     private TagServiceImpl tagService;
 
-
     @Mock
     private TagDaoImpl tagDao;
 
     @Mock
-    private DtoMapper dtoMapper;
+    private GiftCertificateDaoImpl giftCertificateDao;
+
+
+
 
     @BeforeEach
     void prepare() {
         firstTagDto = new TagDto();
         firstTagDto.setId(FIRST_TAG_ID);
         firstTagDto.setName(FIRST_TAG_NAME);
+
 
         secondTagDto = new TagDto();
         secondTagDto.setId(SECOND_TAG_ID);
@@ -85,9 +85,10 @@ class TagServiceImplTest {
 
     @Test
     void getByName() {
+        System.out.println(tagService);
         given(tagDao.findByName(firstTag.getName())).willReturn(Optional.of(firstTag));
         TagDto actual = tagService.getByName(firstTag.getName());
-        Assertions.assertEquals(DtoMapper.dtoToTag(actual), firstTag);
+        Assertions.assertEquals(actual.getName(), firstTag.getName());
     }
 
     @Test

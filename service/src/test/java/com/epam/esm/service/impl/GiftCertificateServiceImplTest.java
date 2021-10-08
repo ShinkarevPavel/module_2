@@ -1,8 +1,8 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.TagCertificateDao;
 import com.epam.esm.dao.TagDao;
-
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
@@ -14,12 +14,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +30,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class GiftCertificateServiceImplTest {
+
     private final static long TEST_ID = 1;
     private final static long TEST_TAG_ID = 2;
     private final static long NOT_VALID_TAG_ID = 2052;
@@ -46,6 +49,8 @@ class GiftCertificateServiceImplTest {
     @Mock
     private TagDao tagDao;
 
+    @Mock
+    private TagCertificateDao tagCertificateDao;
 
     private Tag tag;
     private GiftCertificate giftCertificate;

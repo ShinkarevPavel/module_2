@@ -38,7 +38,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public GiftCertificateDto getById(long id) throws NoSuchEntityException{
+    public GiftCertificateDto getById(long id) throws NoSuchEntityException {
         return giftCertificateDao.findById(id)
                 .map(DtoMapper::certificateToDto)
                 .orElseThrow(NoSuchEntityException::new);
@@ -66,8 +66,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public void update(GiftCertificateDto giftCertificateDto) throws NoSuchEntityException{
-        if (giftCertificateDao.findById(giftCertificateDto.getId()).isEmpty() || giftCertificateDto.getId() == null) {
+    public void update(GiftCertificateDto giftCertificateDto) throws NoSuchEntityException {
+        if (giftCertificateDto.getId() == null || giftCertificateDao.findById(giftCertificateDto.getId()).isEmpty()) {
             throw new NoSuchEntityException();
         }
         Map<String, Object> notNullField = fieldValidator(giftCertificateDto);
@@ -86,11 +86,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private Map<String, Object> fieldValidator(GiftCertificateDto giftCertificateDto) {
         Map<String, Object> notNullField = new HashMap<>();
-        if (giftCertificateDto.getName() != null ) {
+        if (giftCertificateDto.getName() != null) {
             if (!EntityValidator.isNameValid(giftCertificateDto.getName())) {
                 throw new EntityFieldValidationException("error_message.name");
             }
-            notNullField.put(ID.getName(), giftCertificateDto.getName());
+            notNullField.put(NAME.getName(), giftCertificateDto.getName());
         }
         if (giftCertificateDto.getDescription() != null) {
             if (!EntityValidator.isDescriptionValid(giftCertificateDto.getDescription())) {

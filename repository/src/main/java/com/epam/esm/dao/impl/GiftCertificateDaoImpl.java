@@ -18,7 +18,7 @@ import java.util.*;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String SELECT_ALL_GIFT_CERTIFICATES = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
-            "gc.last_update_date,t.id, t.name FROM gift_certificate AS gc LEFT JOIN tag_certificate_associate " +
+            "gc.last_update_date,t.id as t_id, t.name as t_name FROM gift_certificate AS gc LEFT JOIN tag_certificate_associate " +
             "AS at ON gc.id=at.gift_id LEFT JOIN tags AS t ON at.tag_id=t.id";
 
     private static final String CREATE_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";

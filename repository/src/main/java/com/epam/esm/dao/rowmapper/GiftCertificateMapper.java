@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.epam.esm.dao.EntityFields.*;
 
@@ -26,17 +24,5 @@ public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
         certificate.setCreateDate(resultSet.getTimestamp(CREATE_DATE.getName()).toLocalDateTime());
         certificate.setLastUpdateDate(resultSet.getTimestamp(LAST_UPDATE_DATE.getName()).toLocalDateTime());
         return certificate;
-    }
-
-    public List<String> getFieldsName() {
-        List<String> fields = new ArrayList<>();
-        fields.add(ID.getName());
-        fields.add(NAME.getName());
-        fields.add(DESCRIPTION.getName());
-        fields.add(PRICE.getName());
-        fields.add(DURATION.getName());
-        fields.add(CREATE_DATE.getName());
-        fields.add(LAST_UPDATE_DATE.getName());
-        return fields;
     }
 }

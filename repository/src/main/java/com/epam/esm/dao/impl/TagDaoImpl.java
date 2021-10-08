@@ -16,10 +16,10 @@ import java.util.Optional;
 
 @Repository
 public class TagDaoImpl implements TagDao {
-    private static final String GET_BY_NAME = "SELECT t.id, t.name FROM tags AS t WHERE name=?";
+    private static final String GET_BY_NAME = "SELECT t.id as t_id, t.name as t_name FROM tags AS t WHERE name=?";
     private static final String CREATE_TAG = "INSERT INTO tags (name) VALUES (?)";
-    private static final String FIND_BY_ID = "SELECT t.id, t.name FROM tags AS t WHERE id=?";
-    private static final String FIND_ALL = "SELECT t.id, t.name FROM tags AS t";
+    private static final String FIND_BY_ID = "SELECT t.id as t_id, t.name as t_name FROM tags AS t WHERE id=?";
+    private static final String FIND_ALL = "SELECT t.id as t_id, t.name as t_name FROM tags AS t";
     private static final String DELETE_BY_ID = "DELETE FROM tags WHERE id=?";
 
 
