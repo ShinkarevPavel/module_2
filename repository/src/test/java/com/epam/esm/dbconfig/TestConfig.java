@@ -14,7 +14,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 @ComponentScan("com.epam.esm")
 public class TestConfig {
 
-//    private static final String SQL_INIT = "classpath:db_init.sql";
     private static final String SQL_SETUP = "classpath:db_setup.sql";
 
 
@@ -27,7 +26,6 @@ public class TestConfig {
                 .setScriptEncoding("UTF-8")
                 .ignoreFailedDrops(true)
                 .addScript(SQL_SETUP)
-//                .addScript(SQL_INIT)
                 .build();
     }
 

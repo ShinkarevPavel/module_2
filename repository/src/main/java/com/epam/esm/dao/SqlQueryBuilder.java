@@ -8,7 +8,7 @@ import java.util.Map;
 @Component
 public class SqlQueryBuilder {
     private String MAIN_PART = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
-            "gc.last_update_date, t.id, t.name FROM gift_certificate gc LEFT JOIN tag_certificate_associate " +
+            "gc.last_update_date, t.id as t_id, t.name as t_name FROM gift_certificate gc LEFT JOIN tag_certificate_associate " +
             "at ON gc.id=at.gift_id LEFT JOIN tags t ON at.tag_id=t.id WHERE t.name " +
             "like ('%%' %s '%%') and (gc.name LIKE concat ('%%', '%s', '%%') or gc.description LIKE concat ('%%', '%s', '%%'))";
     private final String UPDATE_COMMON = "UPDATE gift_certificate SET ";
