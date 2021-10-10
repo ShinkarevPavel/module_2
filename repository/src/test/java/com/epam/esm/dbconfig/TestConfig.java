@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class TestConfig {
 
     private static final String SQL_SETUP = "classpath:db_setup.sql";
+    private static final String SQL_INIT = "classpath:db_init.sql";
 
 
     @Bean
@@ -26,6 +27,7 @@ public class TestConfig {
                 .setScriptEncoding("UTF-8")
                 .ignoreFailedDrops(true)
                 .addScript(SQL_SETUP)
+                .addScript(SQL_INIT)
                 .build();
     }
 
