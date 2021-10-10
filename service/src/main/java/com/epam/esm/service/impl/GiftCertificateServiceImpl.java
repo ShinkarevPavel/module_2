@@ -60,6 +60,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public void delete(long id) {
+        if (giftCertificateDao.findById(id).isEmpty()) {
+            throw new NoSuchEntityException();
+        }
         tagCertificateDao.deleteFromTagCertificateAssociateTable(id);
         giftCertificateDao.delete(id);
     }

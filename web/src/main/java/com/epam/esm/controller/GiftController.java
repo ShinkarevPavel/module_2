@@ -30,10 +30,16 @@ public class GiftController {
         return giftCertificateService.create(certificateDto);
     }
 
-    @PatchMapping //
+    @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody GiftCertificateDto giftCertificateDto) {
         giftCertificateService.update(giftCertificateDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        giftCertificateService.delete(id);
     }
 
     @GetMapping

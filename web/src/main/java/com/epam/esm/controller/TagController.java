@@ -35,6 +35,12 @@ public class TagController {
         return tagService.create(tagDto);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        tagService.delete(id);
+    }
+
     @GetMapping(params = "name")
     public TagDto findByName(@RequestParam(value = "name") String name) {
         return tagService.getByName(name);
