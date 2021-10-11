@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.TagCertificateDao;
+import com.epam.esm.dao.impl.TagCertificateDaoImpl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
     private TagDao tagDao;
-    private TagCertificateDao tagCertificateDao;
+    private TagCertificateDaoImpl tagCertificateDaoImpl;
 
-    public TagServiceImpl(TagDao tagDao, TagCertificateDao tagCertificateDao) {
+    public TagServiceImpl(TagDao tagDao, TagCertificateDaoImpl tagCertificateDaoImpl) {
         this.tagDao = tagDao;
-        this.tagCertificateDao = tagCertificateDao;
+        this.tagCertificateDaoImpl = tagCertificateDaoImpl;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TagServiceImpl implements TagService {
         if (tagDao.findById(id).isEmpty()) {
             throw new NoSuchEntityException();
         }
-        if (tagCertificateDao.isPresentRowByTagId(id)) {
+        if (tagCertificateDaoImpl.isPresentRowByTagId(id)) {
             throw new NotAcceptableActionException("error_message.forbidden");
         }
         tagDao.delete(id);

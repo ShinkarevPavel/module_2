@@ -10,8 +10,10 @@ public class SqlQueryBuilder {
     private String MAIN_PART = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
             "gc.last_update_date, t.id as t_id, t.name as t_name FROM gift_certificate gc LEFT JOIN tag_certificate_associate " +
             "at ON gc.id=at.gift_id LEFT JOIN tags t ON at.tag_id=t.id WHERE t.name " +
-            "like ('%%' %s '%%') and (gc.name LIKE concat ('%%', '%s', '%%') or gc.description LIKE concat ('%%', '%s', '%%'))";
+            "like ('%%' %s '%%')";
     private final String UPDATE_COMMON = "UPDATE gift_certificate SET ";
+    private final String UPDATE = " and (gc.name LIKE concat ('%%', '%s', '%%') or gc.description LIKE concat ('%%', '%s', '%%'))";
+    private final String IF_TAG_NULL_PART = " or (t.name is null)";
     private final String WHERE = " WHERE ";
     private final String SPACE = " ";
     private final String COMMA_SIGN = ", ";
@@ -43,11 +45,12 @@ public class SqlQueryBuilder {
         String query = "";
         if (tagName == null) {
             tagName = "";
+            MAIN_PART += IF_TAG_NULL_PART;
         }
         if (searchPart == null) {
             searchPart = "";
         }
-        query = String.format(MAIN_PART, "'" + tagName + "'", searchPart, searchPart);
+        query = String.format(MAIN_PART + UPDATE, "'" + tagName + "'", searchPart, searchPart);
         StringBuilder stringBuilder = new StringBuilder(query);
         if (fieldsForSort != null && !fieldsForSort.isEmpty()) {
             stringBuilder.append(ORDER_BY);

@@ -48,11 +48,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
-        GiftCertificate certificate = DtoMapper.dtoToCertificate(giftCertificateDto);
-        certificate = giftCertificateDao.create(certificate);
-        if (certificate.getTags() != null) {
-            certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
-            tagCertificateDao.addToTagCertificateAssociateTable(certificate.getId(), certificate.getTags());
+        GiftCertificate certificate = null;
+        if (EntityValidator.isValidEntityFieldForCreate(giftCertificateDto)) {
+            certificate = DtoMapper.dtoToCertificate(giftCertificateDto);
+            certificate = giftCertificateDao.create(certificate);
+            if (certificate.getTags() != null) {
+                certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
+                tagCertificateDao.addToTagCertificateAssociateTable(certificate.getId(), certificate.getTags());
+            }
         }
         return DtoMapper.certificateToDto(certificate);
     }
@@ -84,6 +87,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         fieldsForSort = sortFieldValidator(fieldsForSort);
         orderSort = orderSortValidator(orderSort);
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
+        if (!giftCertificates.isEmpty()) {
+            giftCertificates.forEach(certificate -> certificate.setTags(tagCertificateDao.getTagsByCertificateId(certificate.getId())));
+        }
         return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
     }
 
@@ -116,6 +122,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         notNullField.put(LAST_UPDATE_DATE.getName(), Timestamp.valueOf(LocalDateTime.now()));
         return notNullField;
     }
+
+
 
     private List<Tag> certificateTagsChecker(List<TagDto> certificateTags, Long certificateId) {
         List<Tag> newCertificateTags = new ArrayList<>();

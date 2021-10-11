@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagCertificateDao;
+import com.epam.esm.dao.impl.TagCertificateDaoImpl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
@@ -50,7 +50,7 @@ class GiftCertificateServiceImplTest {
     private TagDao tagDao;
 
     @Mock
-    private TagCertificateDao tagCertificateDao;
+    private TagCertificateDaoImpl tagCertificateDaoImpl;
 
     private Tag tag;
     private GiftCertificate giftCertificate;
@@ -102,7 +102,7 @@ class GiftCertificateServiceImplTest {
         GiftCertificateDto actualGiftCertificateDto = giftCertificateService.getById(TEST_ID);
 
         GiftCertificateDto expectedCertificateDto = DtoMapper.certificateToDto(giftCertificate);
-        Assertions.assertEquals(actualGiftCertificateDto, expectedCertificateDto);
+        Assertions.assertEquals(expectedCertificateDto, actualGiftCertificateDto);
     }
 
     @Test

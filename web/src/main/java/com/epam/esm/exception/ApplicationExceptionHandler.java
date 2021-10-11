@@ -1,9 +1,5 @@
-package com.epam.esm.exceptionconfig;
+package com.epam.esm.exception;
 
-import com.epam.esm.exception.EntityFieldValidationException;
-import com.epam.esm.exception.EntryAlreadyExistsException;
-import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.exception.NoSuchEntityFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
