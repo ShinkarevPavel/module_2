@@ -106,7 +106,7 @@ class GiftCertificateDaoImplTest {
     void findByCertificateFieldAndSortIfAllParametersNull() {
         List<GiftCertificate> actual = certificateDao
                 .findByCertificateFieldAndSort(null, null, null, null);
-        assertEquals(actual.size(), 2);
+        assertEquals(actual.size(), 3);
     }
 
 }

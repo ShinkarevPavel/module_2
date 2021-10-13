@@ -12,7 +12,8 @@ import java.util.List;
 @RequestMapping("/api/v1/tags")
 public class TagController {
 
-    private final TagService tagService;
+    private TagService tagService;
+
 
     @Autowired
     public TagController(TagService tagService) {

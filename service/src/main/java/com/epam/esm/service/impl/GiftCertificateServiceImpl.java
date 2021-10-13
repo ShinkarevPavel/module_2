@@ -93,6 +93,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
     }
 
+
     private Map<String, Object> fieldValidator(GiftCertificateDto giftCertificateDto) {
         Map<String, Object> notNullField = new HashMap<>();
         if (giftCertificateDto.getName() != null) {

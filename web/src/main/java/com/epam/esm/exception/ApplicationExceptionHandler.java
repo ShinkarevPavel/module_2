@@ -55,6 +55,14 @@ class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(NotAcceptableActionException.class)
+    public ResponseEntity<Object> handleEntryNotFoundException(NotAcceptableActionException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
+        response.put(ERROR_CODE, 40901);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
     private String getMessage(int errorCode) {
         return "error_code." + errorCode;
     }
