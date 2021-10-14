@@ -21,14 +21,19 @@ import java.util.Optional;
 
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = GiftCertificateServiceImpl.class)
 class GiftCertificateServiceImplTest {
 
     private final static long TEST_ID = 1;
@@ -40,16 +45,16 @@ class GiftCertificateServiceImplTest {
     private final static double TEST_PRICE = 15.12;
     private final static int TEST_DURATION = 10;
 
-    @InjectMocks
+    @Autowired
     private GiftCertificateServiceImpl giftCertificateService;
 
-    @Mock
+    @MockBean
     private GiftCertificateDao giftCertificateDao;
 
-    @Mock
+    @MockBean
     private TagDao tagDao;
 
-    @Mock
+    @MockBean
     private TagCertificateDaoImpl tagCertificateDaoImpl;
 
     private Tag tag;

@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.impl.TagCertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
@@ -9,9 +9,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,8 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = TagServiceImpl.class)
 class TagServiceImplTest {
 
     private static final long FIRST_TAG_ID = 112;
@@ -37,24 +39,20 @@ class TagServiceImplTest {
     private List<TagDto> tagsDto;
     private List<Tag> tags;
 
-    @InjectMocks
+    @Autowired
     private TagServiceImpl tagService;
 
-    @Mock
+    @MockBean
     private TagDaoImpl tagDao;
 
-    @Mock
-    private GiftCertificateDaoImpl giftCertificateDao;
-
-
-
+    @MockBean
+    private TagCertificateDaoImpl giftCertificateDao;
 
     @BeforeEach
     void prepare() {
         firstTagDto = new TagDto();
         firstTagDto.setId(FIRST_TAG_ID);
         firstTagDto.setName(FIRST_TAG_NAME);
-
 
         secondTagDto = new TagDto();
         secondTagDto.setId(SECOND_TAG_ID);
@@ -81,11 +79,8 @@ class TagServiceImplTest {
         tags.add(secondTag);
     }
 
-
-
     @Test
     void getByName() {
-        System.out.println(tagService);
         given(tagDao.findByName(firstTag.getName())).willReturn(Optional.of(firstTag));
         TagDto actual = tagService.getByName(firstTag.getName());
         Assertions.assertEquals(actual.getName(), firstTag.getName());
