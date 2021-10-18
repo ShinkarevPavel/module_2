@@ -1,20 +1,25 @@
 package com.epam.esm.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
-class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
+class ApplicationExceptionHandler {
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_CODE = "errorCode";
     private final ResourceBundleMessageSource messages;
@@ -62,6 +67,35 @@ class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
         response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
         response.put(ERROR_CODE, 40901);
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, Locale locale) {
+        String message = resolveBindingResultErrors(e.getBindingResult());
+        return new ResponseEntity<>(createResponse(40001, locale, message), HttpStatus.BAD_REQUEST);
+    }
+
+    private Map<String, Object> createResponse(int errorCode, Locale locale, String errorDescription) {
+        Map<String, Object> response = createResponse(errorCode, locale);
+        response.put("errorDescription", errorDescription);
+        return response;
+    }
+
+    private Map<String, Object> createResponse(int errorCode, Locale locale) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(getMessage(errorCode), null, locale));
+        response.put(ERROR_CODE, errorCode);
+        return response;
+    }
+
+    private String resolveBindingResultErrors(BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+                .map(fr -> {
+                    String field = fr.getField();
+                    String validationMessage = fr.getDefaultMessage();
+                    return String.format("'%s': %s", field, validationMessage);
+                })
+                .collect(Collectors.joining(", "));
     }
 
     private String getMessage(int errorCode) {

@@ -1,9 +1,13 @@
 package com.epam.esm.util;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -53,5 +57,30 @@ public class DtoMapper {
                 .name(tagDto.getName())
                 .build();
         return tag;
+    }
+
+    public static User dtoToUser(UserDto userDto) {
+        User user = User.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .orders(userDto.getOrders() != null ? userDto.getOrders().stream().map(DtoMapper::dtoToOrder).collect(Collectors.toList()) : new ArrayList<>())
+                .build();
+        return user;
+    }
+
+    public static UserDto userToDto(User user) {
+        UserDto userDto = UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .orders(user.getOrders() != null ? user.getOrders().stream().map(DtoMapper::orderToDto).collect(Collectors.toList()) : new ArrayList<>()).build();
+        return userDto;
+    }
+
+    private static OrderDto orderToDto(Order order) {
+        return null;
+    }
+
+    private static Order dtoToOrder(OrderDto orderDto) {
+        return null;
     }
 }

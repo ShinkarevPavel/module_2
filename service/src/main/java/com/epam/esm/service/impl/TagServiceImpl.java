@@ -10,6 +10,7 @@ import com.epam.esm.exception.NotAcceptableActionException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.DtoMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public TagDto create(TagDto tagDto) {
         if (tagDao.findByName(tagDto.getName()).isPresent()) {
             throw new EntryAlreadyExistsException("error_message.exist");
@@ -35,6 +37,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (tagDao.findById(id).isEmpty()) {
             throw new NoSuchEntityException();

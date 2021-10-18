@@ -1,24 +1,30 @@
 package com.epam.esm.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "tags")
+@Table(name = "users")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Tag {
+@AllArgsConstructor
+public class User {
+
     @Id
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(length = 45, nullable = false)
     private String name;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 }
