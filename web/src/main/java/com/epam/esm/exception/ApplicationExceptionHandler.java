@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,23 +66,20 @@ class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, Locale locale) {
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String message = resolveBindingResultErrors(e.getBindingResult());
-        return new ResponseEntity<>(createResponse(40001, locale, message), HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(createResponse(40001, message), HttpStatus.BAD_REQUEST);
     }
 
-    private Map<String, Object> createResponse(int errorCode, Locale locale, String errorDescription) {
-        Map<String, Object> response = createResponse(errorCode, locale);
-        response.put("errorDescription", errorDescription);
-        return response;
-    }
 
-    private Map<String, Object> createResponse(int errorCode, Locale locale) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put(ERROR_MESSAGE, messages.getMessage(getMessage(errorCode), null, locale));
+    private Map<String, Object> createResponse(int errorCode,  String errorDescription) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, errorDescription);
         response.put(ERROR_CODE, errorCode);
         return response;
     }
+
 
     private String resolveBindingResultErrors(BindingResult bindingResult) {
         return bindingResult.getFieldErrors().stream()

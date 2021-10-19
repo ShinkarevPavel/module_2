@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public ResourceBundleMessageSource getResourceBundleMessageSource() {
         ResourceBundleMessageSource messages = new ResourceBundleMessageSource();
-        messages.addBasenames("error_messages");
+        messages.addBasenames("ValidationMessages");
         messages.setDefaultEncoding("UTF-8");
         return messages;
     }

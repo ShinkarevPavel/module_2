@@ -5,6 +5,7 @@ import com.epam.esm.entity.GiftCertificate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Repository
@@ -17,6 +18,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String SELECT_BY_ID = SELECT_ALL_GIFT_CERTIFICATES + " WHERE gc.id=?";
     private static final String DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id=?";
 
+    @PersistenceContext
     private EntityManager entityManager;
 
     public GiftCertificateDaoImpl(EntityManager entityManager) {

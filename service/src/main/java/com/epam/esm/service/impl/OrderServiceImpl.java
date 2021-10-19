@@ -22,9 +22,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto create(OrderDto orderDto) {
-        if (!userDao.isContains(orderDto.getUser().getId())) {
-            throw new NoSuchEntityException("error_message.user_not_found");
-        }
+//        throw new NoSuchEntityException("error_message.user_not_found");
 
         return null;
     }

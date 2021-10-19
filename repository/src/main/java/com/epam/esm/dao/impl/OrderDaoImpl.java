@@ -5,12 +5,14 @@ import com.epam.esm.entity.Order;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
 
+    @PersistenceContext
     private EntityManager entityManager;
 
     public OrderDaoImpl(EntityManager entityManager) {
