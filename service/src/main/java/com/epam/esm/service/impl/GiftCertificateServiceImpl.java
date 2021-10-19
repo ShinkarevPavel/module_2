@@ -2,39 +2,32 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.EntityFields;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.EntityFieldValidationException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.exception.NoSuchEntityFieldException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DtoMapper;
-import com.epam.esm.validator.EntityValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.epam.esm.dao.EntityFields.*;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDao giftCertificateDao;
     private TagDao tagDao;
-    private TagCertificateDao tagCertificateDao;
 
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao, TagCertificateDao tagCertificateDao) {
+
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagDao = tagDao;
-        this.tagCertificateDao = tagCertificateDao;
     }
 
     @Override
@@ -48,16 +41,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
-        GiftCertificate certificate = null;
-        if (EntityValidator.isValidEntityFieldForCreate(giftCertificateDto)) {
-            certificate = DtoMapper.dtoToCertificate(giftCertificateDto);
-            certificate = giftCertificateDao.create(certificate);
-            if (certificate.getTags() != null) {
-                certificate.setTags(tagDao.addCertificateTags(certificate.getTags()));
-                tagCertificateDao.addToTagCertificateAssociateTable(certificate.getId(), certificate.getTags());
-            }
-        }
-        return DtoMapper.certificateToDto(certificate);
+        GiftCertificate creatableCertificate = DtoMapper.dtoToCertificate(giftCertificateDto);
+        creatableCertificate.setTags(certificateTagsChecker(giftCertificateDto.getTags()));
+        return DtoMapper.certificateToDto(giftCertificateDao.create(creatableCertificate));
     }
 
     @Transactional
@@ -66,75 +52,72 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (giftCertificateDao.findById(id).isEmpty()) {
             throw new NoSuchEntityException();
         }
-        tagCertificateDao.deleteFromTagCertificateAssociateTable(id);
         giftCertificateDao.delete(id);
     }
 
     @Transactional
     @Override
     public void update(GiftCertificateDto giftCertificateDto) throws NoSuchEntityException {
-        if (giftCertificateDto.getId() == null || giftCertificateDao.findById(giftCertificateDto.getId()).isEmpty()) {
+        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(giftCertificateDto.getId());
+        if (Objects.isNull(giftCertificateDto.getId()) || optionalGiftCertificate.isEmpty()) {
             throw new NoSuchEntityException();
         }
-        Map<String, Object> notNullField = fieldValidator(giftCertificateDto);
-        List<Tag> certificateNewTags = certificateTagsChecker(giftCertificateDto.getTags(), giftCertificateDto.getId());
-        tagCertificateDao.addToTagCertificateAssociateTable(giftCertificateDto.getId(), certificateNewTags);
-        giftCertificateDao.update(giftCertificateDto.getId(), notNullField);
+        GiftCertificate updatableCertificate = createUpdatableCertificate(optionalGiftCertificate.get(), DtoMapper.dtoToCertificate(giftCertificateDto));
+        updatableCertificate.setTags(certificateTagsChecker(giftCertificateDto.getTags()));
+        giftCertificateDao.update(updatableCertificate);
+
     }
 
     @Override
     public List<GiftCertificateDto> findByAttributes(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
-        fieldsForSort = sortFieldValidator(fieldsForSort);
-        orderSort = orderSortValidator(orderSort);
-        List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
-        if (!giftCertificates.isEmpty()) {
-            giftCertificates.forEach(certificate -> certificate.setTags(tagCertificateDao.getTagsByCertificateId(certificate.getId())));
-        }
-        return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
+//        fieldsForSort = sortFieldValidator(fieldsForSort);
+//        orderSort = orderSortValidator(orderSort);
+//        List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
+//        if (!giftCertificates.isEmpty()) {
+//            giftCertificates.forEach(certificate -> certificate.setTags(tagCertificateDao.getTagsByCertificateId(certificate.getId())));
+//        }
+//        return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
+        return null;
     }
 
 
-    private Map<String, Object> fieldValidator(GiftCertificateDto giftCertificateDto) {
-        Map<String, Object> notNullField = new HashMap<>();
-        if (giftCertificateDto.getName() != null) {
-            if (!EntityValidator.isNameValid(giftCertificateDto.getName())) {
-                throw new EntityFieldValidationException("error_message.name");
-            }
-            notNullField.put(NAME.getName(), giftCertificateDto.getName());
+    private GiftCertificate createUpdatableCertificate(GiftCertificate updatableCertificate, GiftCertificate giftCertificate) {
+
+        boolean isUpdated = false;
+        // Todo F`n flag
+        if (Objects.nonNull(giftCertificate.getName()) && !giftCertificate.getName().equals(updatableCertificate.getName())) {
+            updatableCertificate.setName(giftCertificate.getName());
+            isUpdated = true;
         }
-        if (giftCertificateDto.getDescription() != null) {
-            if (!EntityValidator.isDescriptionValid(giftCertificateDto.getDescription())) {
-                throw new EntityFieldValidationException("error_message.description");
-            }
-            notNullField.put(DESCRIPTION.getName(), giftCertificateDto.getDescription());
+
+        if (Objects.nonNull(giftCertificate.getDescription()) && !giftCertificate.getDescription().equals(updatableCertificate.getDescription())) {
+            updatableCertificate.setDescription(giftCertificate.getDescription());
+            isUpdated = true;
         }
-        if (giftCertificateDto.getPrice() != null) {
-            if (!EntityValidator.isPriceValid(giftCertificateDto.getPrice())) {
-                throw new EntityFieldValidationException("error_message.price");
-            }
-            notNullField.put(PRICE.getName(), giftCertificateDto.getPrice());
+
+        if (Objects.nonNull(giftCertificate.getPrice()) && !Objects.equals(giftCertificate.getPrice(), updatableCertificate.getPrice())) {
+            updatableCertificate.setPrice(giftCertificate.getPrice());
+            isUpdated = true;
         }
-        if (giftCertificateDto.getDuration() != null) {
-            if (!EntityValidator.isDurationValid(giftCertificateDto.getDuration())) {
-                throw new EntityFieldValidationException("error_message.duration");
-            }
-            notNullField.put(DURATION.getName(), giftCertificateDto.getDuration());
+
+        if (Objects.nonNull(giftCertificate.getDuration()) && !Objects.equals(giftCertificate.getDuration(), updatableCertificate.getDuration())) {
+            updatableCertificate.setDuration(giftCertificate.getDuration());
+            isUpdated = true;
         }
-        notNullField.put(LAST_UPDATE_DATE.getName(), Timestamp.valueOf(LocalDateTime.now()));
-        return notNullField;
+
+        if (isUpdated) {
+            updatableCertificate.setLastUpdateDate(LocalDateTime.now());
+        }
+        return updatableCertificate;
     }
 
 
-
-    private List<Tag> certificateTagsChecker(List<TagDto> certificateTags, Long certificateId) {
+    private List<Tag> certificateTagsChecker(List<TagDto> certificateTags) {
         List<Tag> newCertificateTags = new ArrayList<>();
-        if (certificateTags != null && !certificateTags.isEmpty()) {
+        if (Objects.nonNull(certificateTags) && !certificateTags.isEmpty()) {
             certificateTags.forEach(t -> {
-                if (t.getName() != null) {
-                    Tag tag = tagDao.findOrCreateTag(DtoMapper.dtoToTag(t));
-                    if (!tagCertificateDao.isPresentTagAndCertificateInAssociateTable(certificateId, tag.getId())) {
-                        newCertificateTags.add(tag);
-                    }
+                if (Objects.nonNull(t.getName())) {
+                    newCertificateTags.add(tagDao.findOrCreateTag(DtoMapper.dtoToTag(t)));
                 }
             });
         }

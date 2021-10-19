@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tags")
@@ -21,4 +22,7 @@ public class Tag {
 
     @Column(length = 45, nullable = false)
     private String name;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
+    private List<GiftCertificate> giftCertificates;
 }

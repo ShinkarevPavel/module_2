@@ -12,6 +12,6 @@ import javax.validation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NameConstraint {
     String message() default "Invalid phone number";
-    Class<?>[] groups() default {UserDto.Update.class};
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -1,7 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1/certificates")
@@ -28,13 +28,15 @@ public class GiftController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificateDto create(@RequestBody GiftCertificateDto certificateDto) {
+    public GiftCertificateDto create(@Validated(GiftCertificateDto.Create.class) @RequestBody GiftCertificateDto certificateDto) {
         return giftCertificateService.create(certificateDto);
     }
 
-    @PatchMapping
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody GiftCertificateDto giftCertificateDto) {
+    public void update(@PathVariable Long id,@Validated(GiftCertificateDto.Update.class) @RequestBody GiftCertificateDto giftCertificateDto) {
+        System.out.println(giftCertificateDto);
+        giftCertificateDto.setId(id);
         giftCertificateService.update(giftCertificateDto);
     }
 

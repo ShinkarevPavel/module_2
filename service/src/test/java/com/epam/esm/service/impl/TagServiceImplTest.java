@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.impl.TagCertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
@@ -45,8 +44,7 @@ class TagServiceImplTest {
     @MockBean
     private TagDaoImpl tagDao;
 
-    @MockBean
-    private TagCertificateDaoImpl giftCertificateDao;
+
 
     @BeforeEach
     void prepare() {

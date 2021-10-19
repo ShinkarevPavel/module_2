@@ -26,9 +26,10 @@ public class UserController {
         return userService.create(userDto);
     }
 
-    @PatchMapping
+    @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@Validated(UserDto.Update.class) @RequestBody UserDto userDto) {
+    public void update(@PathVariable Long id, @Validated @RequestBody UserDto userDto) {
+        userDto.setId(id);
         userService.update(userDto);
     }
 }

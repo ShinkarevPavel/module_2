@@ -1,6 +1,7 @@
 package com.epam.esm.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@DynamicUpdate
 public class GiftCertificate {
 
     @Id
@@ -35,7 +37,7 @@ public class GiftCertificate {
     @Column(name = "create_date",nullable = false, updatable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "last_ipdate_date",nullable = false)
+    @Column(name = "last_update_date",nullable = false)
     private LocalDateTime lastUpdateDate;
 
     @ManyToMany

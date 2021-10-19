@@ -40,6 +40,7 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public List<Tag> findAll() {
+        // Todo criteriaBuilder API
         return entityManager.createQuery(FIND_ALL, Tag.class).getResultList();
     }
 
@@ -47,9 +48,9 @@ public class TagDaoImpl implements TagDao {
     public Optional<Tag> findByName(String name) {
         Tag tag = null;
         Query query = entityManager.createQuery(GET_BY_NAME);
-        int result = query.setParameter(NAME_PARAM, name).getFirstResult();
-        if (result != 0) {
-            tag = (Tag) query.setParameter(NAME_PARAM, name).getSingleResult(); // Todo use try/catch and only getSingleResult
+        List<Tag> tags = query.setParameter(NAME_PARAM, name).getResultList();
+        if (!tags.isEmpty()) {
+            tag = (Tag) query.setParameter(NAME_PARAM, name).getSingleResult();
         }
         return Optional.ofNullable(tag);
     }

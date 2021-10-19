@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 
@@ -43,14 +44,12 @@ public class SpringDataSourceConfiguration {
         return hikariDataSource;
     }
 
-//    @Bean
-//    public JpaTransactionManager jpaTransactionManager() {
-//        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-//        jpaTransactionManager.setEntityManagerFactory(localContainerEntityManagerFactoryBean().getObject());
-//        return jpaTransactionManager;
-//    }
-
-    // Todo If it here i sent exc like - expected 1 jpaTransactionManager but found 2
+    @Bean
+    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dataSource);
+        return dataSourceTransactionManager;
+    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {

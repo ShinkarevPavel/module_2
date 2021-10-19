@@ -25,6 +25,8 @@ public class User {
     @Column(length = 45, nullable = false)
     private String name;
 
+
+    //Todo Hibirnate n+1 problem
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 }

@@ -14,16 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-    //Todo
-    public interface Update {}
-    public interface Create {}
 
-    @NotNull(groups = Update.class)
     private Long id;
-
-    @Size(min = 1, max = 45, groups = Create.class)
-    @Size(min = 1, max = 45, groups = Update.class)
-    @NotBlank
+    @NotEmpty
+    @Size(min = 1, max = 45)
     private String name;
 
     private List<OrderDto> orders;

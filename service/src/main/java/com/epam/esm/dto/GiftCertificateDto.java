@@ -3,7 +3,7 @@ package com.epam.esm.dto;
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,14 +15,28 @@ public class GiftCertificateDto {
 
     private Long id;
 
-    @Size(min = 1, max = 45)
+    public interface Create {
+    }
+
+    public interface Update {
+    }
+
+    @NotEmpty(groups = Create.class)
+    @Size(min = 1, max = 45, groups = {Create.class, Update.class})
     private String name;
 
+    @NotNull(groups = Create.class)
+    @Size(min = 1, max = 80, groups = {Create.class, Update.class})
     private String description;
 
+    @NotNull(groups = {Create.class})
+    @Digits(integer = 5, fraction = 2, groups = {Create.class, Update.class})
+    @DecimalMin(groups = {Create.class, Update.class},value = "0.50")
     private Double price;
 
-
+    @NotNull(groups = Create.class)
+    @Min(value = 1, groups = {Create.class, Update.class})
+    @Max(value = 365, groups = {Create.class, Update.class})
     private Integer duration;
 
     @JsonIgnore
