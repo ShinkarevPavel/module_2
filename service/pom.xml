@@ -19,6 +19,8 @@
 
     <dependencies>
 
+
+
         <dependency>
             <groupId>com.pavelshinkarev.rest</groupId>
             <artifactId>repository</artifactId>

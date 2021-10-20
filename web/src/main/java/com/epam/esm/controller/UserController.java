@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.User;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,10 +27,16 @@ public class UserController {
         return userService.create(userDto);
     }
 
+
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(@PathVariable Long id, @Validated @RequestBody UserDto userDto) {
         userDto.setId(id);
         userService.update(userDto);
+    }
+
+    @GetMapping(value = "/{id}")
+    public UserDto getById(@PathVariable Long id) {
+        return userService.getById(id);
     }
 }

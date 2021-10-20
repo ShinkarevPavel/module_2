@@ -18,9 +18,9 @@ public class UserConstraintValidator implements ConstraintValidator<UserConstrai
         if (value == null) {
             return false;
         }
-        if (Objects.isNull(value.getId()) || value.getId() <= 0) {
+        if (Objects.isNull(value.getId()) || value.getId() < 1) {
             context.disableDefaultConstraintViolation();
-
+            context.buildConstraintViolationWithTemplate("{user.id.message}").addConstraintViolation();
             return false;
         }
         return true;

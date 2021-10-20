@@ -82,31 +82,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
 
     private GiftCertificate createUpdatableCertificate(GiftCertificate updatableCertificate, GiftCertificate giftCertificate) {
-
-        boolean isUpdated = false;
-        // Todo F`n flag
         if (Objects.nonNull(giftCertificate.getName()) && !giftCertificate.getName().equals(updatableCertificate.getName())) {
             updatableCertificate.setName(giftCertificate.getName());
-            isUpdated = true;
         }
 
         if (Objects.nonNull(giftCertificate.getDescription()) && !giftCertificate.getDescription().equals(updatableCertificate.getDescription())) {
             updatableCertificate.setDescription(giftCertificate.getDescription());
-            isUpdated = true;
         }
 
         if (Objects.nonNull(giftCertificate.getPrice()) && !Objects.equals(giftCertificate.getPrice(), updatableCertificate.getPrice())) {
             updatableCertificate.setPrice(giftCertificate.getPrice());
-            isUpdated = true;
         }
 
         if (Objects.nonNull(giftCertificate.getDuration()) && !Objects.equals(giftCertificate.getDuration(), updatableCertificate.getDuration())) {
             updatableCertificate.setDuration(giftCertificate.getDuration());
-            isUpdated = true;
-        }
-
-        if (isUpdated) {
-            updatableCertificate.setLastUpdateDate(LocalDateTime.now());
         }
         return updatableCertificate;
     }

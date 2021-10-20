@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @DynamicUpdate
+
 public class GiftCertificate {
 
     @Id
@@ -50,5 +51,11 @@ public class GiftCertificate {
     public void addTag(Tag tag) {
         tags.add(tag);
     }
+
+    @PreUpdate   //todo  update time even there is no updates - if all fields were same with entity into BD
+    public void preUpdate() {
+        lastUpdateDate = LocalDateTime.now();
+    }
+
 
 }

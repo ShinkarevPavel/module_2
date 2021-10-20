@@ -1,6 +1,5 @@
 package com.epam.esm.validator;
 
-import org.springframework.context.annotation.PropertySource;
 
 import java.lang.annotation.*;
 import javax.validation.*;
@@ -9,7 +8,7 @@ import javax.validation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserConstraint {
-    String message() default "{defauuser.message}";
+    String message() default "{default.user.message}";
 
     Class<?>[] groups() default {};
 

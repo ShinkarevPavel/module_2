@@ -27,7 +27,8 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order create(Order order) {
-        entityManager.merge(order);
+        System.out.println(order);
+        entityManager.persist(order);
         return order;
     }
 

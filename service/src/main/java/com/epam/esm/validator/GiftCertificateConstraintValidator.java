@@ -20,7 +20,7 @@ public class GiftCertificateConstraintValidator implements ConstraintValidator<O
             return false;
         }
         for (GiftCertificateDto g : value) {
-            if (Objects.isNull(g.getId()) || g.getId() <= 0) {
+            if (Objects.isNull(g.getId()) || g.getId() < 1) {
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate("{giftcertificate.id.message}").addConstraintViolation();
                 return false;

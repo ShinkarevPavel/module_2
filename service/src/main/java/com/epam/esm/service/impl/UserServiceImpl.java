@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
-        // todo validation
         User user = userDao.create(DtoMapper.dtoToUser(userDto));
         return DtoMapper.userToDto(user);
     }
@@ -37,7 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(long id) {
-        return null;
+        return userDao.findById(id).map(DtoMapper::userToDto)
+                .orElseThrow(NoSuchEntityException::new);
     }
 
     @Override

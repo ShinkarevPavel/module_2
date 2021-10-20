@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.entity.Order;
 import com.epam.esm.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +23,10 @@ public class OrderController {
     public OrderDto create(@Valid @RequestBody OrderDto orderDto) {
         System.out.println("Controller : " + orderDto);
         return orderService.create(orderDto);
+    }
+
+    @GetMapping("/{id}")
+    public OrderDto getById(@PathVariable Long id) {
+        return orderService.getById(id);
     }
 }

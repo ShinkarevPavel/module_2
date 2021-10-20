@@ -28,7 +28,7 @@ class ApplicationExceptionHandler {
     @ExceptionHandler(NoSuchEntityException.class)
     public ResponseEntity<Object> handleEntryNotFoundException(NoSuchEntityException e, Locale locale) {
         Map<String, Object> response = new HashMap<>();
-        response.put(ERROR_MESSAGE, messages.getMessage(getMessage(40401), null, locale));
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
         response.put(ERROR_CODE, 40401);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -71,7 +71,6 @@ class ApplicationExceptionHandler {
 
         return new ResponseEntity<>(createResponse(40001, message), HttpStatus.BAD_REQUEST);
     }
-
 
     private Map<String, Object> createResponse(int errorCode,  String errorDescription) {
         Map<String, Object> response = new HashMap<>();

@@ -1,12 +1,11 @@
 package com.epam.esm.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,5 +23,5 @@ public class Tag {
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
-    private List<GiftCertificate> giftCertificates;
+    private List<GiftCertificate> giftCertificates = new ArrayList<>();
 }

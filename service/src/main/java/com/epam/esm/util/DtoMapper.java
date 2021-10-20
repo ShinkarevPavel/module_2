@@ -11,6 +11,7 @@ import com.epam.esm.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -26,61 +27,76 @@ public class DtoMapper {
                 .price(giftCertificate.getPrice())
                 .createDate(giftCertificate.getCreateDate())
                 .lastUpdateDate(giftCertificate.getLastUpdateDate())
-                .tags(giftCertificate.getTags() != null ? giftCertificate.getTags().stream().map(DtoMapper::TagToDto).collect(Collectors.toList()) : new ArrayList<>())
+                .tags(Objects.nonNull(giftCertificate.getTags()) ? giftCertificate.getTags().stream().map(DtoMapper::TagToDto).collect(Collectors.toList()) : new ArrayList<>())
                 .build();
     }
 
     public static GiftCertificate dtoToCertificate(GiftCertificateDto giftCertificateDto) {
         return GiftCertificate.builder()
-                .id(giftCertificateDto.getId() != null ? giftCertificateDto.getId() : null)
+                .id(Objects.nonNull(giftCertificateDto.getId()) ? giftCertificateDto.getId() : null)
                 .name(giftCertificateDto.getName())
                 .description(giftCertificateDto.getDescription())
                 .price(giftCertificateDto.getPrice())
                 .duration(giftCertificateDto.getDuration())
                 .createDate(giftCertificateDto.getCreateDate())
                 .lastUpdateDate(giftCertificateDto.getLastUpdateDate())
-                .tags(giftCertificateDto.getTags() != null ? giftCertificateDto.getTags().stream().map(DtoMapper::dtoToTag).collect(Collectors.toList()) : new ArrayList<>())
+                .tags(Objects.nonNull(giftCertificateDto.getTags()) ? giftCertificateDto.getTags().stream().map(DtoMapper::dtoToTag).collect(Collectors.toList()) : new ArrayList<>())
                 .build();
     }
 
     public static TagDto TagToDto(Tag tag) {
-        TagDto tagDto = TagDto.builder()
+        return TagDto.builder()
                 .id(tag.getId())
                 .name(tag.getName())
                 .build();
-        return tagDto;
     }
 
     public static Tag dtoToTag(TagDto tagDto) {
-        Tag tag = Tag.builder()
-                .id(tagDto.getId() != null ? tagDto.getId() : null)
+        return Tag.builder()
+                .id(Objects.nonNull(tagDto.getId()) ? tagDto.getId() : null)
                 .name(tagDto.getName())
                 .build();
-        return tag;
     }
 
     public static User dtoToUser(UserDto userDto) {
-        User user = User.builder()
-                .id(userDto.getId())
+        return User.builder()
+                .id(Objects.nonNull(userDto.getId()) ? userDto.getId() : null)
                 .name(userDto.getName())
-                .orders(userDto.getOrders() != null ? userDto.getOrders().stream().map(DtoMapper::dtoToOrder).collect(Collectors.toList()) : new ArrayList<>())
                 .build();
-        return user;
     }
 
     public static UserDto userToDto(User user) {
-        UserDto userDto = UserDto.builder()
-                .id(user.getId())
+        return UserDto.builder()
+                .id(Objects.nonNull(user.getId()) ? user.getId() : null)
                 .name(user.getName())
-                .orders(user.getOrders() != null ? user.getOrders().stream().map(DtoMapper::orderToDto).collect(Collectors.toList()) : new ArrayList<>()).build();
-        return userDto;
+                .build();
     }
 
-    private static OrderDto orderToDto(Order order) {
-        return null;
+    public static OrderDto orderToDto(Order order) {
+        return OrderDto.builder()
+                .id(Objects.nonNull(order.getId()) ? order.getId() : null)
+                .cost(order.getCost())
+                .user(Objects.nonNull(order.getUser()) ?
+                        DtoMapper.userToDto(order.getUser())
+                        : null)
+                .order_date(order.getOrderDate())
+                .certificates(Objects.nonNull(order.getGiftCertificates()) ? order.getGiftCertificates()
+                        .stream()
+                        .map(DtoMapper::certificateToDto)
+                        .collect(Collectors.toList()) : new ArrayList<>())
+                .build();
     }
 
-    private static Order dtoToOrder(OrderDto orderDto) {
-        return null;
+    public static Order dtoToOrder(OrderDto orderDto) {
+        return Order.builder()
+                .id(Objects.nonNull(orderDto.getId()) ? orderDto.getId() : null)
+                .cost(orderDto.getCost())
+                .user(Objects.nonNull(orderDto.getUser()) ? DtoMapper.dtoToUser(orderDto.getUser()) : null)
+                .orderDate(orderDto.getOrder_date())
+                .giftCertificates(Objects.nonNull(orderDto.getCertificates()) ? orderDto.getCertificates()
+                        .stream()
+                        .map(DtoMapper::dtoToCertificate)
+                        .collect(Collectors.toList()) : new ArrayList<>())
+                .build();
     }
 }

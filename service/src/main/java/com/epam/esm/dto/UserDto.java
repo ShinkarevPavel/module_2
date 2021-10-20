@@ -1,9 +1,6 @@
 package com.epam.esm.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import javax.validation.constraints.*;
@@ -20,5 +17,5 @@ public class UserDto {
     @Size(min = 1, max = 45)
     private String name;
 
-    private List<OrderDto> orders;
+//    private List<OrderDto> orders;
 }
