@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 import javax.sql.DataSource;
@@ -16,6 +17,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:database.properties")
+@EnableTransactionManagement
 public class SpringDataSourceConfiguration {
 
     @Value("${spring.datasource.driver-class-nam}")

@@ -5,6 +5,7 @@ public class NoSuchEntityException extends RuntimeException {
 
 
     public NoSuchEntityException() {
+        super("error_code.40401");
     }
 
     public NoSuchEntityException(String message) {

@@ -14,7 +14,6 @@ import com.epam.esm.util.DtoMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,32 +68,28 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findByAttributes(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
-//        fieldsForSort = sortFieldValidator(fieldsForSort);
-//        orderSort = orderSortValidator(orderSort);
-//        List<GiftCertificate> giftCertificates = giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort);
-//        if (!giftCertificates.isEmpty()) {
-//            giftCertificates.forEach(certificate -> certificate.setTags(tagCertificateDao.getTagsByCertificateId(certificate.getId())));
-//        }
-//        return giftCertificates.stream().map(DtoMapper::certificateToDto).collect(Collectors.toList());
-        return null;
+    public List<GiftCertificateDto> findByAttributes(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
+        return giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort)
+                .stream()
+                .map(DtoMapper::certificateToDto)
+                .collect(Collectors.toList());
     }
 
 
     private GiftCertificate createUpdatableCertificate(GiftCertificate updatableCertificate, GiftCertificate giftCertificate) {
-        if (Objects.nonNull(giftCertificate.getName()) && !giftCertificate.getName().equals(updatableCertificate.getName())) {
+        if (Objects.nonNull(giftCertificate.getName())) {
             updatableCertificate.setName(giftCertificate.getName());
         }
 
-        if (Objects.nonNull(giftCertificate.getDescription()) && !giftCertificate.getDescription().equals(updatableCertificate.getDescription())) {
+        if (Objects.nonNull(giftCertificate.getDescription())) {
             updatableCertificate.setDescription(giftCertificate.getDescription());
         }
 
-        if (Objects.nonNull(giftCertificate.getPrice()) && !Objects.equals(giftCertificate.getPrice(), updatableCertificate.getPrice())) {
+        if (Objects.nonNull(giftCertificate.getPrice())) {
             updatableCertificate.setPrice(giftCertificate.getPrice());
         }
 
-        if (Objects.nonNull(giftCertificate.getDuration()) && !Objects.equals(giftCertificate.getDuration(), updatableCertificate.getDuration())) {
+        if (Objects.nonNull(giftCertificate.getDuration())) {
             updatableCertificate.setDuration(giftCertificate.getDuration());
         }
         return updatableCertificate;

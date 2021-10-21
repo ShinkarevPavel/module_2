@@ -2,10 +2,12 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
 import java.util.*;
 
 @Repository
@@ -14,15 +16,15 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "gc.last_update_date,t.id as t_id, t.name as t_name FROM gift_certificate AS gc LEFT JOIN tag_certificate_associate " +
             "AS at ON gc.id=at.gift_id LEFT JOIN tags AS t ON at.tag_id=t.id";
 
-    private static final String CREATE_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_BY_ID = SELECT_ALL_GIFT_CERTIFICATES + " WHERE gc.id=?";
-    private static final String DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id=?";
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    private CriteriaBuilder criteriaBuilder;
+
     public GiftCertificateDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
+        this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
     @Override
@@ -43,14 +45,85 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public void update(GiftCertificate giftCertificate) {
-       entityManager.merge(giftCertificate);
+        entityManager.merge(giftCertificate);
     }
 
 
     @Override
-    public List<GiftCertificate> findByCertificateFieldAndSort(String tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
-//        SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
-//        return jdbcTemplate.query(sqlQueryBuilder.buildQueryForSearchAndSort(tagName, searchPart, fieldsForSort, orderSort), giftMapper);
-        return null;
+    public List<GiftCertificate> findByCertificateFieldAndSort(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
+        CriteriaQuery<GiftCertificate> query = criteriaBuilder.createQuery(GiftCertificate.class);
+        Root<GiftCertificate> root = query.from(GiftCertificate.class);
+        query.select(root);
+
+        List<Predicate> predicates = new ArrayList<>();
+        if (Objects.nonNull(tagName)) {
+            predicates.add(buildPredicateByTagName(root, tagName));
+        }
+
+        if (Objects.nonNull(searchPart)) {
+            predicates.add(getPartSearchPredicate(root, searchPart));
+        }
+
+        if (!predicates.isEmpty()) {
+            Predicate resultPredicate = predicates.get(0);
+            for (int i = 1; i < predicates.size(); i++) {
+                resultPredicate = criteriaBuilder.and(resultPredicate, predicates.get(i));
+            }
+            query.where(resultPredicate);
+            if (Objects.nonNull(tagName)) {
+                query.groupBy(root.get("id"));
+                query.having(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.count(root), (long) tagName.size()));
+            }
+        }
+
+        if (Objects.nonNull(fieldsForSort) && !fieldsForSort.isEmpty()) {
+            List<Order> orderList = buildSortedOrderList(fieldsForSort, orderSort, root);
+            if (!orderList.isEmpty()) {
+                query.orderBy(orderList);
+            }
+        }
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    private List<Order> buildSortedOrderList(List<String> fieldsForSort, List<String> orderSort, Root<GiftCertificate> root) {
+        List<Order> orderList = new ArrayList<>();
+        String orderType;
+        for (int i = 0; i < fieldsForSort.size(); i++) {
+            if (Objects.nonNull(orderSort) && i < orderSort.size()) {
+                orderType = orderSort.get(i);
+            } else {
+                orderType = "asc";
+            }
+            Order order;
+            if (orderType.equalsIgnoreCase("asc")) {
+                order = criteriaBuilder.asc(root.get(fieldsForSort.get(i)));
+            } else {
+                order = criteriaBuilder.desc(root.get(fieldsForSort.get(i)));
+            }
+            orderList.add(order);
+        }
+        return orderList;
+    }
+
+    private Predicate getPartSearchPredicate(Root<GiftCertificate> root, String partSearch) {
+        Predicate namePredicate = criteriaBuilder.like(root.get("name"), "%" + partSearch + "%");
+        Predicate descriptionPredicate = criteriaBuilder.like(root.get("description"), "%" + partSearch + "%");
+        return criteriaBuilder.or(namePredicate, descriptionPredicate);
+    }
+
+
+    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, List<String> tagNames) {
+        Join<GiftCertificate, Tag> tagsJoin = root.join("tags");
+        int counter = 0;
+        Predicate predicate = null;
+        for (String t : tagNames) {
+            Predicate currentPredicate = criteriaBuilder.equal(tagsJoin.get("name"), t);
+            if (counter++ == 0) {
+                predicate = currentPredicate;
+            } else {
+                predicate = criteriaBuilder.or(predicate, currentPredicate);
+            }
+        }
+        return predicate;
     }
 }

@@ -1,7 +1,5 @@
 package com.epam.esm.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@DynamicUpdate
+//@DynamicUpdate
 
 public class GiftCertificate {
 
@@ -56,6 +56,4 @@ public class GiftCertificate {
     public void preUpdate() {
         lastUpdateDate = LocalDateTime.now();
     }
-
-
 }

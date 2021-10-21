@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.service.UserService;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v2/users")
@@ -39,4 +42,5 @@ public class UserController {
     public UserDto getById(@PathVariable Long id) {
         return userService.getById(id);
     }
+
 }

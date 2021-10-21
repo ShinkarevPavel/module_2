@@ -1,12 +1,12 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.entity.Order;
 import com.epam.esm.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v2/orders")
@@ -28,5 +28,11 @@ public class OrderController {
     @GetMapping("/{id}")
     public OrderDto getById(@PathVariable Long id) {
         return orderService.getById(id);
+    }
+
+
+    @GetMapping("/user/{id}")
+    public List<OrderDto> getOrderByUserId(@PathVariable Long id) {
+        return orderService.getUserOrders(id);
     }
 }

@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +16,6 @@ import java.util.Optional;
 
 @Repository
 public class TagDaoImpl implements TagDao {
-    private static final String NAME_PARAM = "name";
-    private static final String GET_BY_NAME = "SELECT t FROM Tag t WHERE t.name= :name";
-    private static final String FIND_ALL = "SELECT t FROM Tag t";
-
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -40,19 +38,22 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public List<Tag> findAll() {
-        // Todo criteriaBuilder API
-        return entityManager.createQuery(FIND_ALL, Tag.class).getResultList();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = query.from(Tag.class);
+        query.select(root);
+        return entityManager.createQuery(query).getResultList();
     }
 
     @Override
     public Optional<Tag> findByName(String name) {
-        Tag tag = null;
-        Query query = entityManager.createQuery(GET_BY_NAME);
-        List<Tag> tags = query.setParameter(NAME_PARAM, name).getResultList();
-        if (!tags.isEmpty()) {
-            tag = (Tag) query.setParameter(NAME_PARAM, name).getSingleResult();
-        }
-        return Optional.ofNullable(tag);
+        final String NAME_PARAM = "name";
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = query.from(Tag.class);
+        query.select(root);
+        query.where(criteriaBuilder.equal(root.get(NAME_PARAM), name));
+        return Optional.ofNullable(entityManager.createQuery(query).getSingleResult());
     }
 
     @Override

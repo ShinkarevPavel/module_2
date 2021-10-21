@@ -47,7 +47,7 @@ public class GiftController {
     }
 
     @GetMapping
-    public List<GiftCertificateDto> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
+    public List<GiftCertificateDto> findByAttributes(@RequestParam(required = false, name = "tagName") List <String> tagName,
                                                      @RequestParam(required = false, name = "searchPart") String searchPart,
                                                      @RequestParam(required = false, name = "fieldsForSort") List<String> fieldsForSort,
                                                      @RequestParam(required = false, name = "orderSort") List<String> orderSort) {

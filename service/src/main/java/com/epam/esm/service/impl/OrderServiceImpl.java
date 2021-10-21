@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -33,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    // ToDo refactor method and implement sending all error messages
     public OrderDto create(OrderDto orderDto) {
         Order order = DtoMapper.dtoToOrder(orderDto);
         Optional<User> optionalUser = userDao.findById(order.getUser().getId());
@@ -64,6 +66,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getUserOrders(Long userId) {
-        return null;
+
+        return orderDao.getUserOrders(userId)
+                .stream()
+                .map(DtoMapper::orderToDto)
+                .collect(Collectors.toList());
     }
 }
