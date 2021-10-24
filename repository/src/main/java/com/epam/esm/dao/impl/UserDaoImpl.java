@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -42,4 +41,6 @@ public class UserDaoImpl implements UserDao {
     public boolean isContains(long id) {
         return entityManager.contains(entityManager.find(User.class, id));
     }
+
+
 }

@@ -49,5 +49,10 @@ public class TagController {
         return tagService.getByName(name);
     }
 
+    @GetMapping("/widest")
+    public TagDto getWidelyUsedTagWithHighestOrderCost() {
+        return tagService.getWidelyUsedTagWithHighestOrderCost();
+    }
+
 
 }

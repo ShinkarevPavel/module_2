@@ -3,6 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,13 +13,10 @@ import java.util.*;
 
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
-    private static final String SELECT_ALL_GIFT_CERTIFICATES = "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, " +
-            "gc.last_update_date,t.id as t_id, t.name as t_name FROM gift_certificate AS gc LEFT JOIN tag_certificate_associate " +
-            "AS at ON gc.id=at.gift_id LEFT JOIN tags AS t ON at.tag_id=t.id";
-
 
     @PersistenceContext
     private EntityManager entityManager;
+
 
     private CriteriaBuilder criteriaBuilder;
 
@@ -48,6 +46,15 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         entityManager.merge(giftCertificate);
     }
 
+    @Override
+    public List<Tag> getCertificateTags(Long giftCertificateId) {
+        CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = query.from(Tag.class);
+        Join<Tag, GiftCertificate> join = root.join("giftCertificates");
+        query.select(root);
+        query.where(criteriaBuilder.equal(join.get("id"), giftCertificateId));
+        return entityManager.createQuery(query).getResultList();
+    }
 
     @Override
     public List<GiftCertificate> findByCertificateFieldAndSort(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
@@ -60,7 +67,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             predicates.add(buildPredicateByTagName(root, tagName));
         }
 
-        if (Objects.nonNull(searchPart)) {
+        if (Strings.isNotEmpty(searchPart)) {
             predicates.add(getPartSearchPredicate(root, searchPart));
         }
 

@@ -9,7 +9,9 @@ import java.util.List;
 @Entity
 @Table(name = "tags")
 @Builder
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {

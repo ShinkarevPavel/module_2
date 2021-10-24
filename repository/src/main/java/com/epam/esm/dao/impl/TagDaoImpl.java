@@ -5,6 +5,7 @@ import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -48,13 +49,23 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Optional<Tag> findByName(String name) {
         final String NAME_PARAM = "name";
+        final int TAG_PARAM = 0;
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
         Root<Tag> root = query.from(Tag.class);
         query.select(root);
         query.where(criteriaBuilder.equal(root.get(NAME_PARAM), name));
-        return Optional.ofNullable(entityManager.createQuery(query).getSingleResult());
+        List<Tag> tags = entityManager.createQuery(query).getResultList();
+        return tags.size() == 0 ? Optional.empty() : Optional.of(tags.get(TAG_PARAM));
+            //TOdo What way is better
+//        try {
+//            return Optional.of(entityManager.createQuery(query).getSingleResult());
+//
+//        } catch (NoResultException e) {
+//            return Optional.empty();
+//        }
     }
+
 
     @Override
     public Tag findOrCreateTag(Tag tag) {
@@ -66,5 +77,16 @@ public class TagDaoImpl implements TagDao {
         List<Tag> tagsWithId = new ArrayList<>();
         tags.forEach(t -> tagsWithId.add(findOrCreateTag(t)));
         return tagsWithId;
+    }
+
+    @Override
+    public Tag getWidelyUsedTagWithHighestOrderCost() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = query.from(Tag.class);
+
+
+        //Todo
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntryAlreadyExistsException;
@@ -19,11 +20,13 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
     private TagDao tagDao;
+    private UserDao userDao;
 
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao) {
+    public TagServiceImpl(TagDao tagDao, UserDao userDao) {
         this.tagDao = tagDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class TagServiceImpl implements TagService {
         if (tagDao.findById(id).isEmpty()) {
             throw new NoSuchEntityException();
         }
-        // todo server error if
+        // TODO server error try/catch
         tagDao.delete(id);
     }
 
@@ -66,5 +69,10 @@ public class TagServiceImpl implements TagService {
         return tagDao.findByName(name)
                 .map(DtoMapper::TagToDto)
                 .orElseThrow(NoSuchEntityException::new);
+    }
+
+    @Override
+    public TagDto getWidelyUsedTagWithHighestOrderCost() {
+        return DtoMapper.TagToDto(tagDao.getWidelyUsedTagWithHighestOrderCost());
     }
 }

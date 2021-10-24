@@ -34,24 +34,23 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    // ToDo refactor method and implement sending all error messages
     public OrderDto create(OrderDto orderDto) {
         Order order = DtoMapper.dtoToOrder(orderDto);
         Optional<User> optionalUser = userDao.findById(order.getUser().getId());
         if (optionalUser.isEmpty()) {
             throw new NoSuchEntityException("error_message.user_not_found");
         }
-        order.setUser(optionalUser.get());
         Double cost = 0.0;
         List<GiftCertificate> certificates = new ArrayList<>();
         for (GiftCertificate giftCertificate : order.getGiftCertificates()) {
             Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(giftCertificate.getId());
             if (optionalGiftCertificate.isEmpty()) {
-                throw new NoSuchEntityException("error_message.certificate_not_found");
+                throw new NoSuchEntityException("error_message.certificate_not_found", String.valueOf(giftCertificate.getId()));
             }
             certificates.add(optionalGiftCertificate.get());
             cost += optionalGiftCertificate.get().getPrice();
         }
+        order.setUser(optionalUser.get());
         order.setGiftCertificates(certificates);
         order.setCost(cost);
         order = orderDao.create(order);
@@ -66,6 +65,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getUserOrders(Long userId) {
+        if (!userDao.isContains(userId)) {
+            throw new NoSuchEntityException("error_message.user_not_found");
+        }
 
         return orderDao.getUserOrders(userId)
                 .stream()

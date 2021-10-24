@@ -13,8 +13,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-//@DynamicUpdate
+@Getter
+@Setter
+@EqualsAndHashCode
+@DynamicUpdate
 
 public class GiftCertificate {
 
