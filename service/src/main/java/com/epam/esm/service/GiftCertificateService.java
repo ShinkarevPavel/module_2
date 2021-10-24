@@ -12,7 +12,7 @@ public interface GiftCertificateService {
 
     void delete(long id);
 
-    void update(GiftCertificateDto giftCertificateDto);
+    void update(GiftCertificateDto giftCertificateDto) throws IllegalAccessException;
 
     List<GiftCertificateDto> findByAttributes(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort);
 

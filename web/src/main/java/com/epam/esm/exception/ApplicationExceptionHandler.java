@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -36,7 +37,7 @@ class ApplicationExceptionHandler {
     @ExceptionHandler(EntityFieldValidationException.class)
     public ResponseEntity<Object> handleEntryNotFoundException(EntityFieldValidationException e, Locale locale) {
         Map<String, Object> response = new HashMap<>();
-        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale) + e.getValue());
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale) + (Objects.nonNull(e.getValue()) ? e.getValue() : ""));
         response.put(ERROR_CODE, 40601);
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }

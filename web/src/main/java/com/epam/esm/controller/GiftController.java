@@ -34,9 +34,13 @@ public class GiftController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable Long id,@Validated(GiftCertificateDto.Update.class) @RequestBody GiftCertificateDto giftCertificateDto) {
+    public void update(@PathVariable Long id,@Validated(GiftCertificateDto.Update.class) @RequestBody GiftCertificateDto giftCertificateDto)  {
         giftCertificateDto.setId(id);
-        giftCertificateService.update(giftCertificateDto);
+        try {
+            giftCertificateService.update(giftCertificateDto);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @DeleteMapping("/{id}")

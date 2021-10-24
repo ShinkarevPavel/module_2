@@ -25,7 +25,7 @@ public class GiftCertificate {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    @Column( length = 45, nullable = false)
+    @Column(length = 45, nullable = false)
     private String name;
 
     @Column(length = 8, nullable = false)
@@ -43,19 +43,30 @@ public class GiftCertificate {
     @Column(name = "last_update_date",nullable = false)
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "tag_certificate_associate",
             joinColumns = @JoinColumn(name = "gift_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private List<Tag> tags = new ArrayList<>();
 
-    public void addTag(Tag tag) {
-        tags.add(tag);
-    }
-
-    @PreUpdate   //todo  update time even there is no updates - if all fields were same with entity into BD
+    @PreUpdate
     public void preUpdate() {
         lastUpdateDate = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("GiftCertificate{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", price=").append(price);
+        sb.append(", duration=").append(duration);
+        sb.append(", createDate=").append(createDate);
+        sb.append(", lastUpdateDate=").append(lastUpdateDate);
+        sb.append(", tags=").append(tags);
+        sb.append('}');
+        return sb.toString();
     }
 }
