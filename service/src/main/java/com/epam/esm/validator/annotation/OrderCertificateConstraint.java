@@ -1,4 +1,6 @@
-package com.epam.esm.validator;
+package com.epam.esm.validator.annotation;
+
+import com.epam.esm.validator.GiftCertificateConstraintValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

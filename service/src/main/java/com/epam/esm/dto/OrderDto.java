@@ -1,6 +1,6 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.validator.UserConstraint;
+import com.epam.esm.validator.annotation.UserConstraint;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

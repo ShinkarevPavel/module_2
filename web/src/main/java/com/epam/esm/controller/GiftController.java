@@ -34,13 +34,10 @@ public class GiftController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable Long id,@Validated(GiftCertificateDto.Update.class) @RequestBody GiftCertificateDto giftCertificateDto)  {
+    public void update(@PathVariable Long id, @Validated(GiftCertificateDto.Update.class) @RequestBody GiftCertificateDto giftCertificateDto) {
         giftCertificateDto.setId(id);
-        try {
-            giftCertificateService.update(giftCertificateDto);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        giftCertificateService.update(giftCertificateDto);
+
     }
 
     @DeleteMapping("/{id}")
@@ -50,7 +47,7 @@ public class GiftController {
     }
 
     @GetMapping
-    public List<GiftCertificateDto> findByAttributes(@RequestParam(required = false, name = "tagName") List <String> tagName,
+    public List<GiftCertificateDto> findByAttributes(@RequestParam(required = false, name = "tagName") List<String> tagName,
                                                      @RequestParam(required = false, name = "searchPart") String searchPart,
                                                      @RequestParam(required = false, name = "fieldsForSort") List<String> fieldsForSort,
                                                      @RequestParam(required = false, name = "orderSort") List<String> orderSort) {

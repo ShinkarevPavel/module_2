@@ -1,5 +1,8 @@
 package com.epam.esm.exception;
 
+import org.hibernate.HibernateException;
+import org.hibernate.JDBCException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.PersistenceException;
+import javax.validation.ValidationException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -81,7 +86,16 @@ class ApplicationExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    private Map<String, Object> createResponse(int errorCode,  String errorDescription) {
+
+    @ExceptionHandler(value = ValidationException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(ValidationException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, e.getMessage());
+        response.put(ERROR_CODE, 40001);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    private Map<String, Object> createResponse(int errorCode, String errorDescription) {
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, errorDescription);
         response.put(ERROR_CODE, errorCode);

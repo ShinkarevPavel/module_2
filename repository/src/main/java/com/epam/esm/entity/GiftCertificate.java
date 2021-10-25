@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "id")
 @DynamicUpdate
 
 public class GiftCertificate {
@@ -43,7 +43,7 @@ public class GiftCertificate {
     @Column(name = "last_update_date",nullable = false)
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "tag_certificate_associate",
             joinColumns = @JoinColumn(name = "gift_id", referencedColumnName = "id"),

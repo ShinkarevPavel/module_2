@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -39,12 +40,16 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll() {
+    public List<Tag> findAll(Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
         Root<Tag> root = query.from(Tag.class);
         query.select(root);
-        return entityManager.createQuery(query).getResultList();
+
+        return entityManager.createQuery(query)
+                .setFirstResult((pageable.getPageNumber() -1) * pageable.getPageSize() )
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
     }
 
     @Override

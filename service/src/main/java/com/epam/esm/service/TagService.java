@@ -15,7 +15,7 @@ public interface TagService {
 
     TagDto getByName(String name);
 
-    List<TagDto> getAll();
+    List<TagDto> getAll(int page, int size);
 
     TagDto getWidelyUsedTagWithHighestOrderCost();
 }

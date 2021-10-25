@@ -7,7 +7,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig {
 
     public static void main(String[] args) {
         SpringApplication.run(WebConfig.class, args);

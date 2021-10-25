@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -46,13 +45,6 @@ public class SpringDataSourceConfiguration {
         HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
         return hikariDataSource;
     }
-
-//    @Bean
-//    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-//        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-//        dataSourceTransactionManager.setDataSource(dataSource);
-//        return dataSourceTransactionManager;
-//    }
 
     @Bean
     public JpaTransactionManager jpaTransactionManager() {

@@ -1,6 +1,7 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.validator.annotation.OrderCertificateConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

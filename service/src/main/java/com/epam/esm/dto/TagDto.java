@@ -1,6 +1,7 @@
 package com.epam.esm.dto;
 
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -12,7 +13,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class TagDto {
+public class TagDto extends RepresentationModel<TagDto> {
 
     private Long id;
 

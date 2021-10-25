@@ -10,6 +10,8 @@ import com.epam.esm.exception.UnacceptableRemoveEntityException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,8 +59,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> getAll() {
-        List<Tag> tags = tagDao.findAll();
+    public List<TagDto> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Tag> tags = tagDao.findAll(pageable);
         return tags.stream()
                 .map(DtoMapper::TagToDto)
                 .collect(Collectors.toList());
