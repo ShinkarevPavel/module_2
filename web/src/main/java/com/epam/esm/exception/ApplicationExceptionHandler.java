@@ -73,6 +73,14 @@ class ApplicationExceptionHandler {
         return new ResponseEntity<>(createResponse(40001, message), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UnacceptableRemoveEntityException.class)
+    public ResponseEntity<Object> handleEntryNotFoundException(UnacceptableRemoveEntityException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
+        response.put(ERROR_CODE, 40601);
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     private Map<String, Object> createResponse(int errorCode,  String errorDescription) {
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, errorDescription);

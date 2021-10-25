@@ -15,7 +15,7 @@ public interface TagDao extends BaseDao<Tag>{
 
     Optional<Tag> findByName(String name);
 
-    Tag getWidelyUsedTagWithHighestOrderCost();
+    Optional<Tag> getWidelyUsedTagWithHighestOrderCost();
 
 
 }

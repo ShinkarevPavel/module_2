@@ -9,15 +9,12 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityFieldValidationException;
 import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.exception.NoSuchEntityFieldException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DtoMapper;
-import lombok.SneakyThrows;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,7 +38,6 @@ public class GiftCertificateServiceImpl<T> implements GiftCertificateService {
                 .orElseThrow(NoSuchEntityException::new);
     }
 
-
     @Transactional
     @Override
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
@@ -59,7 +55,6 @@ public class GiftCertificateServiceImpl<T> implements GiftCertificateService {
         giftCertificateDao.delete(id);
     }
 
-
     @Transactional
     @Override
     public void update(GiftCertificateDto giftCertificateDto) throws NoSuchEntityException {
@@ -75,10 +70,8 @@ public class GiftCertificateServiceImpl<T> implements GiftCertificateService {
         if (isAllFieldsNull(giftCertificateDto) && tags.isEmpty()) {
             throw new EntityFieldValidationException("certificate.update.no_data_for_update");
         }
-
         GiftCertificate updatableCertificate = createUpdatableCertificate(optionalGiftCertificate.get(), DtoMapper.dtoToCertificate(giftCertificateDto));
-        updatableCertificate.setTags(new ArrayList<>(tags)); //TODO if without new ArrayList JPA will think that it is immutable collection UOP - will be thrown
-        System.out.println(updatableCertificate);
+        updatableCertificate.setTags(new ArrayList<>(tags)); //TODO if without new ArrayList JPA will think that it is immutable collection! UOP - will be thrown
         giftCertificateDao.update(updatableCertificate);
 
     }
@@ -137,29 +130,6 @@ public class GiftCertificateServiceImpl<T> implements GiftCertificateService {
             }
         });
         return newCertificateTags.stream().toList();
-    }
-
-    private List<String> sortFieldValidator(List<String> fieldsForSort) {
-        if (fieldsForSort != null) {
-            fieldsForSort = fieldsForSort.stream().map(String::toLowerCase).collect(Collectors.toList());
-            List<String> fields = EntityFields.getFields();
-            if (!fields.containsAll(fieldsForSort)) {
-                throw new NoSuchEntityFieldException();
-            }
-        }
-        return fieldsForSort;
-    }
-
-    private List<String> orderSortValidator(List<String> orderSort) {
-        if (orderSort != null) {
-            orderSort = orderSort.stream().map(String::toLowerCase).collect(Collectors.toList());
-            orderSort.forEach(o -> {
-                if (!o.equals("desc") && !o.equals("asc")) {
-                    throw new NoSuchEntityFieldException();
-                }
-            });
-        }
-        return orderSort;
     }
 
     private boolean isNotEmpty(List<?> values) {

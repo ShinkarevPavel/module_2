@@ -6,13 +6,14 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntryAlreadyExistsException;
 import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.exception.NotAcceptableActionException;
+import com.epam.esm.exception.UnacceptableRemoveEntityException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,6 @@ public class TagServiceImpl implements TagService {
         if (tagDao.findById(id).isEmpty()) {
             throw new NoSuchEntityException();
         }
-        // TODO server error try/catch
         tagDao.delete(id);
     }
 
@@ -73,6 +73,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto getWidelyUsedTagWithHighestOrderCost() {
-        return DtoMapper.TagToDto(tagDao.getWidelyUsedTagWithHighestOrderCost());
+        return tagDao.getWidelyUsedTagWithHighestOrderCost()
+                .map(DtoMapper::TagToDto)
+                .orElseThrow(NoSuchEntityException::new);
     }
 }
