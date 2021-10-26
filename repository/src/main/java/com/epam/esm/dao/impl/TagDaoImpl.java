@@ -47,7 +47,7 @@ public class TagDaoImpl implements TagDao {
         query.select(root);
 
         return entityManager.createQuery(query)
-                .setFirstResult((pageable.getPageNumber() -1) * pageable.getPageSize() )
+                .setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize() )
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
     }

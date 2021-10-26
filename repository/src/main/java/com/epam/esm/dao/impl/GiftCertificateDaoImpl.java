@@ -4,6 +4,7 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -57,7 +58,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findByCertificateFieldAndSort(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
+    public List<GiftCertificate> findByCertificateFieldAndSort(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort, Pageable pageable) {
         CriteriaQuery<GiftCertificate> query = criteriaBuilder.createQuery(GiftCertificate.class);
         Root<GiftCertificate> root = query.from(GiftCertificate.class);
         query.select(root);
@@ -89,7 +90,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 query.orderBy(orderList);
             }
         }
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query)
+                .setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
     }
 
     private List<Order> buildSortedOrderList(List<String> fieldsForSort, List<String> orderSort, Root<GiftCertificate> root) {

@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.EntityFields;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
@@ -12,6 +11,8 @@ import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DtoMapper;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,8 +78,9 @@ public class GiftCertificateServiceImpl<T> implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findByAttributes(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort) {
-        return giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort)
+    public List<GiftCertificateDto> findByAttributes(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return giftCertificateDao.findByCertificateFieldAndSort(tagName, searchPart, fieldsForSort, orderSort, pageable)
                 .stream()
                 .map(DtoMapper::certificateToDto)
                 .collect(Collectors.toList());

@@ -28,10 +28,10 @@ public class GiftCertificate {
     @Column(length = 45, nullable = false)
     private String name;
 
-    @Column(length = 8, nullable = false)
+    @Column(length = 1000, nullable = false)
     private String description;
 
-    @Column()
+    @Column(nullable = false)
     private Double price;
 
     @Column(nullable = false)

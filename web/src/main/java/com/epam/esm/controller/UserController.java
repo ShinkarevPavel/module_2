@@ -1,8 +1,7 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.User;
+import com.epam.esm.hateos.LinkBuilder;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,24 +9,26 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v2/users")
 public class UserController {
 
     private final UserService userService;
+    private final LinkBuilder<UserDto> linkBuilder;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, LinkBuilder<UserDto> linkBuilder) {
         this.userService = userService;
+        this.linkBuilder = linkBuilder;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@Validated @RequestBody UserDto userDto) {
-        return userService.create(userDto);
+        UserDto uDto = userService.create(userDto);
+        linkBuilder.addLinks(uDto);
+        return uDto;
     }
 
 
@@ -40,7 +41,8 @@ public class UserController {
 
     @GetMapping(value = "/{id}")
     public UserDto getById(@PathVariable Long id) {
-        return userService.getById(id);
+        UserDto userDto = userService.getById(id);
+        linkBuilder.addLinks(userDto);
+        return userDto;
     }
-
 }

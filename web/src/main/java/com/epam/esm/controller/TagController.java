@@ -3,7 +3,6 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.UnacceptableRemoveEntityException;
 import com.epam.esm.hateos.LinkBuilder;
-import com.epam.esm.hateos.impl.TagLinkBuilder;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,6 +74,4 @@ public class TagController {
         linkBuilder.addLinks(tagDto);
         return tagDto;
     }
-
-
 }

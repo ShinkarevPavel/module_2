@@ -4,6 +4,7 @@ import com.epam.esm.validator.annotation.UserConstraint;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -11,10 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Builder
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "id")
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class OrderDto extends RepresentationModel<OrderDto> {
 
     private Long id;
 

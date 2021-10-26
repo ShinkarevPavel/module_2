@@ -3,13 +3,13 @@ package com.epam.esm.dto;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Builder
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "id")
 @AllArgsConstructor
 @NoArgsConstructor
 

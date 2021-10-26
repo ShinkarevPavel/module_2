@@ -14,6 +14,6 @@ public interface GiftCertificateService {
 
     void update(GiftCertificateDto giftCertificateDto);
 
-    List<GiftCertificateDto> findByAttributes(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort);
+    List<GiftCertificateDto> findByAttributes(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort, int page, int size);
 
 }
