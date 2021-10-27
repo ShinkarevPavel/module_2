@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.TagDto;
-
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface TagService {
 
     TagDto getByName(String name);
 
-    List<TagDto> getAll(int page, int size);
+    List<TagDto> getAll(PageParameterDto pageParameterDto);
 
     TagDto getWidelyUsedTagWithHighestOrderCost();
 }

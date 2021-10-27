@@ -2,20 +2,17 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntryAlreadyExistsException;
 import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.exception.UnacceptableRemoveEntityException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +21,6 @@ public class TagServiceImpl implements TagService {
 
     private TagDao tagDao;
     private UserDao userDao;
-
 
     @Autowired
     public TagServiceImpl(TagDao tagDao, UserDao userDao) {
@@ -59,9 +55,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<Tag> tags = tagDao.findAll(pageable);
+    public List<TagDto> getAll(PageParameterDto pageParameterDto) {
+        List<Tag> tags = tagDao.findAll(DtoMapper.dtoToPageParameter(pageParameterDto));
         return tags.stream()
                 .map(DtoMapper::TagToDto)
                 .collect(Collectors.toList());

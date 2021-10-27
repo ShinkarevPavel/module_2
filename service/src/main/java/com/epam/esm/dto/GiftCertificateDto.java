@@ -6,7 +6,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -53,5 +53,5 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
 
     @Singular
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<TagDto> tags;
+    private Set<TagDto> tags;
 }

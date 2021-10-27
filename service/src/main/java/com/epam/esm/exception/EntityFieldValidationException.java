@@ -3,6 +3,7 @@ package com.epam.esm.exception;
 public class EntityFieldValidationException extends RuntimeException {
 
     private String value;
+
     public EntityFieldValidationException() {
     }
 

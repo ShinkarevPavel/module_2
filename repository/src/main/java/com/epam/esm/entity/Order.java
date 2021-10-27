@@ -1,6 +1,5 @@
 package com.epam.esm.entity;
 
-import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;

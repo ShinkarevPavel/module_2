@@ -3,9 +3,7 @@ package com.epam.esm.dto;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
-
 import javax.validation.constraints.*;
-import java.util.List;
 
 @Builder
 @Getter
@@ -19,6 +17,4 @@ public class UserDto extends RepresentationModel<UserDto> {
     @NotEmpty
     @Size(min = 1, max = 45)
     private String name;
-
-//    private List<OrderDto> orders;
 }

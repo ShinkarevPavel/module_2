@@ -1,6 +1,6 @@
-package com.epam.esm.hateos.impl;
+package com.epam.esm.linkbuilder.impl;
 
-import com.epam.esm.hateos.LinkBuilder;
+import com.epam.esm.linkbuilder.LinkBuilder;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Arrays;

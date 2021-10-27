@@ -1,8 +1,9 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.UnacceptableRemoveEntityException;
-import com.epam.esm.hateos.LinkBuilder;
+import com.epam.esm.linkbuilder.LinkBuilder;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,18 +22,17 @@ public class TagController {
     private TagService tagService;
     private LinkBuilder<TagDto> linkBuilder;
 
-
     @Autowired
     public TagController(TagService tagService, LinkBuilder<TagDto> linkBuilder) {
         this.tagService = tagService;
         this.linkBuilder = linkBuilder;
     }
 
-
     @GetMapping
-    public List<TagDto> getAll(@RequestParam(value = "page", defaultValue = "1", required = false) @Min(1) Integer page,
-                               @RequestParam(value = "size", defaultValue = "5", required = false) @Min(1) Integer size) {
-        return tagService.getAll(page, size).stream()
+    public List<TagDto> getAll(@Valid PageParameterDto pageParameterDto) {
+        System.out.println("tagController page " + pageParameterDto.getPage());
+        System.out.println("tagController size " + pageParameterDto.getSize());
+        return tagService.getAll(pageParameterDto).stream()
                 .peek(linkBuilder::addLinks)
                 .collect(Collectors.toList());
     }
@@ -61,7 +60,7 @@ public class TagController {
         }
     }
 
-    @GetMapping(params = "name")
+    @GetMapping("/name")
     public TagDto findByName(@RequestParam(value = "name") String name) {
         TagDto tagDto = tagService.getByName(name);
         linkBuilder.addLinks(tagDto);

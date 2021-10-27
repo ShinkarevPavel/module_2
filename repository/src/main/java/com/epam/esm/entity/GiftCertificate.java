@@ -5,8 +5,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "gift_certificate")
@@ -17,7 +17,6 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(exclude = "id")
 @DynamicUpdate
-
 public class GiftCertificate {
 
     @Id
@@ -48,7 +47,7 @@ public class GiftCertificate {
             name = "tag_certificate_associate",
             joinColumns = @JoinColumn(name = "gift_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
-    private List<Tag> tags = new ArrayList<>();
+    private Set<Tag> tags = new HashSet<>();
 
     @PreUpdate
     public void preUpdate() {

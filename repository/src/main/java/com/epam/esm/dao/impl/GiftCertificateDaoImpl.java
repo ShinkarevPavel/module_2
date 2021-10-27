@@ -2,10 +2,12 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.PageParameter;
+import com.epam.esm.entity.SearchParameter;
 import com.epam.esm.entity.Tag;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,8 +19,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-
     private CriteriaBuilder criteriaBuilder;
 
     public GiftCertificateDaoImpl(EntityManager entityManager) {
@@ -48,28 +48,29 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<Tag> getCertificateTags(Long giftCertificateId) {
+    public Set<Tag> getCertificateTags(Long giftCertificateId) {
         CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
         Root<Tag> root = query.from(Tag.class);
         Join<Tag, GiftCertificate> join = root.join("giftCertificates");
         query.select(root);
         query.where(criteriaBuilder.equal(join.get("id"), giftCertificateId));
-        return entityManager.createQuery(query).getResultList();
+        Set<Tag> tagSet = new HashSet<>(entityManager.createQuery(query).getResultList());
+        return tagSet;
     }
 
     @Override
-    public List<GiftCertificate> findByCertificateFieldAndSort(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort, Pageable pageable) {
+    public List<GiftCertificate> findByCertificateFieldAndSort(SearchParameter searchParameter, PageParameter pageParameter) {
         CriteriaQuery<GiftCertificate> query = criteriaBuilder.createQuery(GiftCertificate.class);
         Root<GiftCertificate> root = query.from(GiftCertificate.class);
         query.select(root);
 
         List<Predicate> predicates = new ArrayList<>();
-        if (Objects.nonNull(tagName)) {
-            predicates.add(buildPredicateByTagName(root, tagName));
+        if (!CollectionUtils.isEmpty(searchParameter.getTagName())) {
+            predicates.add(buildPredicateByTagName(root, searchParameter.getTagName()));
         }
 
-        if (Strings.isNotEmpty(searchPart)) {
-            predicates.add(getPartSearchPredicate(root, searchPart));
+        if (Strings.isNotEmpty(searchParameter.getSearchPart())) {
+            predicates.add(getPartSearchPredicate(root, searchParameter.getSearchPart()));
         }
 
         if (!predicates.isEmpty()) {
@@ -78,21 +79,22 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 resultPredicate = criteriaBuilder.and(resultPredicate, predicates.get(i));
             }
             query.where(resultPredicate);
-            if (Objects.nonNull(tagName)) {
+            if (!CollectionUtils.isEmpty(searchParameter.getTagName())) {
                 query.groupBy(root.get("id"));
-                query.having(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.count(root), (long) tagName.size()));
+                query.having(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.count(root),
+                        (long) searchParameter.getTagName().size()));
             }
         }
 
-        if (Objects.nonNull(fieldsForSort) && !fieldsForSort.isEmpty()) {
-            List<Order> orderList = buildSortedOrderList(fieldsForSort, orderSort, root);
+        if (!CollectionUtils.isEmpty(searchParameter.getFieldsForSort())) {
+            List<Order> orderList = buildSortedOrderList(searchParameter.getFieldsForSort(), searchParameter.getOrderSort(), root);
             if (!orderList.isEmpty()) {
                 query.orderBy(orderList);
             }
         }
         return entityManager.createQuery(query)
-                .setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize())
-                .setMaxResults(pageable.getPageSize())
+                .setFirstResult((pageParameter.getPage()) * pageParameter.getSize())
+                .setMaxResults(pageParameter.getSize())
                 .getResultList();
     }
 
@@ -121,7 +123,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         Predicate descriptionPredicate = criteriaBuilder.like(root.get("description"), "%" + partSearch + "%");
         return criteriaBuilder.or(namePredicate, descriptionPredicate);
     }
-
 
     private Predicate buildPredicateByTagName(Root<GiftCertificate> root, List<String> tagNames) {
         Join<GiftCertificate, Tag> tagsJoin = root.join("tags");

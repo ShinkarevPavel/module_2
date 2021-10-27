@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.hateos.LinkBuilder;
+import com.epam.esm.linkbuilder.LinkBuilder;
 import com.epam.esm.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +29,12 @@ public class OrderController {
         return oDto;
     }
 
-    @GetMapping("/{id}")
-    public OrderDto getById(@PathVariable Long id) {
-        OrderDto orderDto = orderService.getById(id);
+    @GetMapping("/{userId}")
+    public OrderDto getById(@PathVariable Long userId) {
+        OrderDto orderDto = orderService.getById(userId);
         linkBuilder.addLinks(orderDto);
         return orderDto;
     }
-
 
     @GetMapping("/user/{id}")
     public List<OrderDto> getOrderByUserId(@PathVariable Long id) {

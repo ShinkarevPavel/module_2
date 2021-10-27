@@ -1,4 +1,4 @@
-package com.epam.esm.hateos.impl;
+package com.epam.esm.linkbuilder.impl;
 
 import com.epam.esm.controller.UserController;
 import com.epam.esm.dto.UserDto;

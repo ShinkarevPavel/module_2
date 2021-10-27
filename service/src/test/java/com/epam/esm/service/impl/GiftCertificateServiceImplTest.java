@@ -73,7 +73,7 @@ class GiftCertificateServiceImplTest {
         giftCertificate.setDescription(TEST_DESCRIPTION);
         giftCertificate.setPrice(TEST_PRICE);
         giftCertificate.setDuration(TEST_DURATION);
-        giftCertificate.setTags(tags);
+//        giftCertificate.setTags(tags);
 
         tagDto = new TagDto();
         tagDto.setId(TEST_TAG_ID);
@@ -87,7 +87,7 @@ class GiftCertificateServiceImplTest {
         validGiftCertificateDto.setDescription(TEST_DESCRIPTION);
         validGiftCertificateDto.setPrice(TEST_PRICE);
         validGiftCertificateDto.setDuration(TEST_DURATION);
-        validGiftCertificateDto.setTags(dtoTags);
+//        validGiftCertificateDto.setTags(dtoTags);
 
         giftCertificates = new ArrayList<>();
         giftCertificates.add(giftCertificate);

@@ -1,6 +1,8 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.PageParameterDto;
+import com.epam.esm.dto.SearchParameterDto;
 
 import java.util.List;
 
@@ -14,6 +16,6 @@ public interface GiftCertificateService {
 
     void update(GiftCertificateDto giftCertificateDto);
 
-    List<GiftCertificateDto> findByAttributes(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort, int page, int size);
+    List<GiftCertificateDto> findByAttributes(SearchParameterDto searchParameterDto, PageParameterDto pageParameterDto);
 
 }

@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.NoSuchEntityException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,8 +32,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll() {
-        return null;
+    public List<UserDto> getAll(PageParameterDto pageParameterDto) {
+        List<User> users = userDao.getAll(DtoMapper.dtoToPageParameter(pageParameterDto));
+        return users.stream()
+                .map(DtoMapper::userToDto)
+                .collect(Collectors.toList());
     }
 
     @Override

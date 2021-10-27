@@ -1,18 +1,18 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.PageParameter;
+import com.epam.esm.entity.SearchParameter;
 import com.epam.esm.entity.Tag;
-import org.springframework.data.domain.Pageable;
 
-import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public interface GiftCertificateDao extends BaseDao<GiftCertificate> {
 
-    List<GiftCertificate> findByCertificateFieldAndSort(List<String> tagName, String searchPart, List<String> fieldsForSort, List<String> orderSort, Pageable pageable);
+    List<GiftCertificate> findByCertificateFieldAndSort(SearchParameter searchParameter, PageParameter pageParameter);
 
     void update(GiftCertificate giftCertificate);
 
-    List<Tag> getCertificateTags(Long giftCertificateId);
+    Set<Tag> getCertificateTags(Long giftCertificateId);
 }

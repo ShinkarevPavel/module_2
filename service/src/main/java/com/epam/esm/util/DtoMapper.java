@@ -1,19 +1,13 @@
 package com.epam.esm.util;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Order;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
+import com.epam.esm.dto.*;
+import com.epam.esm.entity.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 @Component
 public class DtoMapper {
@@ -27,7 +21,8 @@ public class DtoMapper {
                 .price(giftCertificate.getPrice())
                 .createDate(giftCertificate.getCreateDate())
                 .lastUpdateDate(giftCertificate.getLastUpdateDate())
-                .tags(Objects.nonNull(giftCertificate.getTags()) ? giftCertificate.getTags().stream().map(DtoMapper::TagToDto).collect(Collectors.toList()) : new ArrayList<>())
+                .tags(Objects.nonNull(giftCertificate.getTags()) ?
+                        giftCertificate.getTags().stream().map(DtoMapper::TagToDto).collect(Collectors.toSet()) : new HashSet<>())
                 .build();
     }
 
@@ -40,7 +35,8 @@ public class DtoMapper {
                 .duration(giftCertificateDto.getDuration())
                 .createDate(giftCertificateDto.getCreateDate())
                 .lastUpdateDate(giftCertificateDto.getLastUpdateDate())
-                .tags(Objects.nonNull(giftCertificateDto.getTags()) ? giftCertificateDto.getTags().stream().map(DtoMapper::dtoToTag).collect(Collectors.toList()) : new ArrayList<>())
+                .tags(Objects.nonNull(giftCertificateDto.getTags()) ?
+                        giftCertificateDto.getTags().stream().map(DtoMapper::dtoToTag).collect(Collectors.toSet()) : new HashSet<>())
                 .build();
     }
 
@@ -77,8 +73,7 @@ public class DtoMapper {
                 .id(Objects.nonNull(order.getId()) ? order.getId() : null)
                 .cost(order.getCost())
                 .user(Objects.nonNull(order.getUser()) ?
-                        DtoMapper.userToDto(order.getUser())
-                        : null)
+                        DtoMapper.userToDto(order.getUser()) : null)
                 .order_date(order.getOrderDate())
                 .certificates(Objects.nonNull(order.getGiftCertificates()) ? order.getGiftCertificates()
                         .stream()
@@ -97,6 +92,22 @@ public class DtoMapper {
                         .stream()
                         .map(DtoMapper::dtoToCertificate)
                         .collect(Collectors.toList()) : new ArrayList<>())
+                .build();
+    }
+
+    public static SearchParameter dtoToSearchParameter(SearchParameterDto searchParameterDto) {
+        return SearchParameter.builder()
+                .tagName(searchParameterDto.getTagName())
+                .searchPart(searchParameterDto.getSearchPart())
+                .fieldsForSort(searchParameterDto.getFieldsForSort())
+                .orderSort(searchParameterDto.getOrderSort())
+                .build();
+    }
+
+    public static PageParameter dtoToPageParameter(PageParameterDto pageParameterDto) {
+        return PageParameter.builder()
+                .page(pageParameterDto.getPage())
+                .size(pageParameterDto.getSize())
                 .build();
     }
 }

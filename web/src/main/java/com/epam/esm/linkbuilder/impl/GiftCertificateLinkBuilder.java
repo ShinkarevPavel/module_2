@@ -1,10 +1,9 @@
-package com.epam.esm.hateos.impl;
+package com.epam.esm.linkbuilder.impl;
 
 import com.epam.esm.controller.GiftController;
 import com.epam.esm.dto.GiftCertificateDto;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class GiftCertificateLinkBuilder extends AbstractBuilder<GiftCertificateDto>{
@@ -17,8 +16,8 @@ public class GiftCertificateLinkBuilder extends AbstractBuilder<GiftCertificateD
 
     @Override
     public void addLinks(GiftCertificateDto giftCertificateDto) {
-        addIdLinks(GiftController.class, giftCertificateDto, giftCertificateDto.getId(), GET);
-        if (Objects.nonNull(giftCertificateDto.getTags()) && giftCertificateDto.getTags().size() > 0) {
+        addIdLinks(GiftController.class, giftCertificateDto, giftCertificateDto.getId(), GET, UPDATE, DELETE);
+        if (!CollectionUtils.isEmpty(giftCertificateDto.getTags())) {
             giftCertificateDto.getTags().forEach(tagDto -> tagLinkBuilder.addLinks(tagDto));
         }
     }

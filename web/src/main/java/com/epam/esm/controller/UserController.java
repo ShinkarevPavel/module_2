@@ -1,13 +1,15 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.hateos.LinkBuilder;
+import com.epam.esm.linkbuilder.LinkBuilder;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v2/users")
@@ -22,15 +24,13 @@ public class UserController {
         this.linkBuilder = linkBuilder;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@Validated @RequestBody UserDto userDto) {
         UserDto uDto = userService.create(userDto);
         linkBuilder.addLinks(uDto);
         return uDto;
     }
-
 
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -44,5 +44,12 @@ public class UserController {
         UserDto userDto = userService.getById(id);
         linkBuilder.addLinks(userDto);
         return userDto;
+    }
+
+    @GetMapping
+    public List<UserDto> getAll(@Validated PageParameterDto pageParameterDto) {
+        List<UserDto> users = userService.getAll(pageParameterDto);
+        users.forEach(linkBuilder::addLinks);
+        return users;
     }
 }

@@ -1,6 +1,5 @@
 package com.epam.esm.validator.annotation;
 
-
 import com.epam.esm.validator.UserConstraintValidator;
 
 import java.lang.annotation.*;

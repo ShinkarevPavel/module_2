@@ -54,5 +54,4 @@ public class OrderDaoImpl implements OrderDao {
     public void delete(long id) {
         throw new UnsupportedOperationException();
     }
-
 }
