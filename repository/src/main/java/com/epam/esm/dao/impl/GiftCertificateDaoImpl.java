@@ -6,6 +6,7 @@ import com.epam.esm.entity.PageParameter;
 import com.epam.esm.entity.SearchParameter;
 import com.epam.esm.entity.Tag;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 

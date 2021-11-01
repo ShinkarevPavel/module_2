@@ -42,7 +42,7 @@ public class GiftCertificate {
     @Column(name = "last_update_date",nullable = false)
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tag_certificate_associate",
             joinColumns = @JoinColumn(name = "gift_id", referencedColumnName = "id"),

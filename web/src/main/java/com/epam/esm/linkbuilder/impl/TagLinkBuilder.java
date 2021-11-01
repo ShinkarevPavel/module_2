@@ -9,6 +9,6 @@ public class TagLinkBuilder extends AbstractBuilder<TagDto> {
 
     @Override
     public void addLinks(TagDto tagDto) {
-        addIdLinks(TagController.class, tagDto, tagDto.getId(), GET, DELETE);
+        addIdLinks(TagController.class, tagDto, tagDto.getId(), SELF, DELETE);
     }
 }

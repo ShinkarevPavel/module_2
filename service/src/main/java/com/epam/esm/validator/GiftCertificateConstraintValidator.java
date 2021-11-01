@@ -2,6 +2,7 @@ package com.epam.esm.validator;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.validator.annotation.OrderCertificateConstraint;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -17,7 +18,7 @@ public class GiftCertificateConstraintValidator implements ConstraintValidator<O
 
     @Override
     public boolean isValid(List<GiftCertificateDto> value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (CollectionUtils.isEmpty(value)) {
             return false;
         }
         for (GiftCertificateDto g : value) {

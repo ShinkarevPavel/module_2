@@ -1,8 +1,12 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.impl.TagDaoImpl;
+import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.exception.UnacceptableRemoveEntityException;
 import com.epam.esm.util.DtoMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(SpringExtension.class)
@@ -27,7 +32,7 @@ class TagServiceImplTest {
     private static final long FIRST_TAG_ID = 112;
     private static final long SECOND_TAG_ID = 223;
     private static final long NEW_TAG_ID = 12;
-    private static final String FIRST_TAG_NAME = "ITTP";
+    private static final String FIRST_TAG_NAME = "IT";
     private static final String SECOND_TAG_NAME = "HR";
     private static final String NEW_TAG_NAME = "Java";
     private TagDto firstTagDto;
@@ -44,7 +49,11 @@ class TagServiceImplTest {
     @MockBean
     private TagDaoImpl tagDao;
 
+    @MockBean
+    private UserDao userDao;
 
+    @MockBean
+    private PageParameterDto pageParameterDto;
 
     @BeforeEach
     void prepare() {
@@ -75,28 +84,47 @@ class TagServiceImplTest {
         tags = new ArrayList<>();
         tags.add(firstTag);
         tags.add(secondTag);
+
     }
 
     @Test
     void getByName() {
-        given(tagDao.findByName(firstTag.getName())).willReturn(Optional.of(firstTag));
+        when(tagDao.findByName(firstTag.getName())).thenReturn(Optional.of(firstTag));
         TagDto actual = tagService.getByName(firstTag.getName());
-        Assertions.assertEquals(actual.getName(), firstTag.getName());
+        assertEquals(actual.getName(), firstTag.getName());
     }
 
     @Test
     void findById() {
-        given(tagDao.findById(FIRST_TAG_ID)).willReturn(Optional.of(firstTag));
+        when(tagDao.findById(FIRST_TAG_ID)).thenReturn(Optional.of(firstTag));
         TagDto actual = tagService.getById(FIRST_TAG_ID);
-        Assertions.assertEquals(DtoMapper.dtoToTag(actual), firstTag);
+        assertEquals(DtoMapper.dtoToTag(actual), firstTag);
     }
 
     @Test
     void getAll() {
-//        given(tagDao.findAll()).willReturn(tags);
-//        List<TagDto> actual = tagService.getAll();
-//
-//        Assertions.assertEquals(actual.get(0).getName(), tagsDto.get(0).getName());
-//        Assertions.assertEquals(actual.get(1).getName(), tagsDto.get(1).getName());
+        when(tagDao.findAll(any())).thenReturn(tags);
+        List<TagDto> tags = tagService.getAll(pageParameterDto);
+        assertEquals(tags.size(), 2);
+    }
+
+    @Test
+    void getWidelyUsedTagWithHighestOrderCost() {
+        when(tagDao.getWidelyUsedTagWithHighestOrderCost()).thenReturn(Optional.of(firstTag));
+        TagDto tagDto = tagService.getWidelyUsedTagWithHighestOrderCost();
+        assertEquals(tagDto.getName(), firstTag.getName());
+    }
+
+    @Test
+    void testDeleteByIdExpectNoSuchEntityException() {
+        when(tagDao.findById(FIRST_TAG_ID)).thenReturn(Optional.empty());
+        Assertions.assertThrows(NoSuchEntityException.class, () -> tagService.delete(FIRST_TAG_ID));
+    }
+
+    @Test
+    void testDeleteByIdExpectException() {
+        when(tagDao.findById(FIRST_TAG_ID)).thenReturn(Optional.of(firstTag));
+        doThrow(new UnacceptableRemoveEntityException()).when(tagDao).delete(FIRST_TAG_ID);
+        Assertions.assertThrows(UnacceptableRemoveEntityException.class, () -> tagService.delete(FIRST_TAG_ID));
     }
 }

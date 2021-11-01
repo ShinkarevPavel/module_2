@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.dbconfig.TestConfig;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,18 +8,16 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
-@ActiveProfiles("dev")
+@SpringBootTest(classes = {TestConfig.class})
 class TagDaoImplTest {
     private static final int EXPECTED_LIST_SIZE = 4;
     private static final long EXPECTED_TAG_ID = 4L;
@@ -27,7 +26,12 @@ class TagDaoImplTest {
 
 
     private static Tag expectedTag;
-    private TagDaoImpl tagDao;
+
+    private TagDao tagDao;
+
+    public TagDaoImplTest(TagDao tagDao) {
+        this.tagDao = tagDao;
+    }
 
     @BeforeAll
     static void prepare() {
@@ -37,10 +41,6 @@ class TagDaoImplTest {
                 .build();
     }
 
-    @Autowired
-    public TagDaoImplTest(TagDaoImpl tagDao) {
-        this.tagDao = tagDao;
-    }
 
     @Test
     @Order(1)

@@ -9,6 +9,6 @@ public class UserLinkBuilder extends AbstractBuilder<UserDto> {
 
     @Override
     public void addLinks(UserDto userDto) {
-        addIdLinks(UserController.class, userDto, userDto.getId(), GET, DELETE);
+        addIdLinks(UserController.class, userDto, userDto.getId(), SELF, DELETE);
     }
 }

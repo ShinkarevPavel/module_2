@@ -10,7 +10,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public abstract class AbstractBuilder<T extends RepresentationModel<T>> implements LinkBuilder<T> {
     protected static final String DELETE = "delete";
     protected static final String UPDATE = "update";
-    protected static final String GET = "get";
+    protected static final String SELF = "self";
 
     protected void addIdLink(Class<?> controllerClass, T entity, long id, String linkName) {
         entity.add(linkTo(controllerClass).slash(id).withRel(linkName));

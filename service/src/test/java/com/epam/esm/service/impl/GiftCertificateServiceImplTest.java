@@ -13,9 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,12 +24,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = GiftCertificateServiceImpl.class)
 class GiftCertificateServiceImplTest {
 
     private final static long TEST_ID = 1;
+    private final static long NO_SUCH_CERTIFICATE_ID = 2;
     private final static long TEST_TAG_ID = 2;
     private final static long NOT_VALID_TAG_ID = 2052;
     private final static String TEST_TAG_NAME = "Test tag";
@@ -53,8 +54,8 @@ class GiftCertificateServiceImplTest {
     private GiftCertificate giftCertificate;
     private TagDto tagDto;
     private GiftCertificateDto validGiftCertificateDto;
-    private List<Tag> tags;
-    private List<TagDto> dtoTags;
+    private Set<Tag> tags;
+    private Set<TagDto> dtoTags;
     private List<GiftCertificate> giftCertificates;
 
 
@@ -64,7 +65,7 @@ class GiftCertificateServiceImplTest {
         tag.setId(TEST_TAG_ID);
         tag.setName(TEST_TAG_NAME);
 
-        tags = new ArrayList<>();
+        tags = new HashSet<>();
         tags.add(tag);
 
         giftCertificate = new GiftCertificate();
@@ -73,21 +74,22 @@ class GiftCertificateServiceImplTest {
         giftCertificate.setDescription(TEST_DESCRIPTION);
         giftCertificate.setPrice(TEST_PRICE);
         giftCertificate.setDuration(TEST_DURATION);
-//        giftCertificate.setTags(tags);
+        giftCertificate.setTags(tags);
 
         tagDto = new TagDto();
         tagDto.setId(TEST_TAG_ID);
         tagDto.setName(TEST_TAG_NAME);
 
-        dtoTags = new ArrayList<>();
+        dtoTags = new HashSet<>();
         dtoTags.add(tagDto);
 
         validGiftCertificateDto = new GiftCertificateDto();
+        validGiftCertificateDto.setId(TEST_ID);
         validGiftCertificateDto.setName(TEST_NAME);
         validGiftCertificateDto.setDescription(TEST_DESCRIPTION);
         validGiftCertificateDto.setPrice(TEST_PRICE);
         validGiftCertificateDto.setDuration(TEST_DURATION);
-//        validGiftCertificateDto.setTags(dtoTags);
+        validGiftCertificateDto.setTags(dtoTags);
 
         giftCertificates = new ArrayList<>();
         giftCertificates.add(giftCertificate);
@@ -95,7 +97,7 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void getById() {
-        given(giftCertificateDao.findById(TEST_ID)).willReturn(Optional.of(giftCertificate));
+        when(giftCertificateDao.findById(TEST_ID)).thenReturn(Optional.of(giftCertificate));
         GiftCertificateDto actualGiftCertificateDto = giftCertificateService.getById(TEST_ID);
 
         GiftCertificateDto expectedCertificateDto = DtoMapper.certificateToDto(giftCertificate);
@@ -104,9 +106,8 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void create() {
-        given(giftCertificateDao.create(any())).willReturn(giftCertificate);
-        given(tagDao.addCertificateTags(tags)).willReturn(tags);
-
+        when(tagDao.findById(TEST_TAG_ID)).thenReturn(Optional.of(tag));
+        when(giftCertificateDao.create(any())).thenReturn(giftCertificate);
         GiftCertificateDto actual = giftCertificateService.create(validGiftCertificateDto);
 
         assertEquals(TEST_NAME, actual.getName());
@@ -117,8 +118,14 @@ class GiftCertificateServiceImplTest {
 
 
     @Test
-    void notFoundCertificateByID() {
+    void notFoundCertificateById() {
         given(giftCertificateDao.findById(NOT_VALID_TAG_ID)).willReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> giftCertificateService.getById(NOT_VALID_TAG_ID));
+    }
+
+    @Test
+    void deleteExpectNoSuchEntityException() {
+        doThrow(new NoSuchEntityException()).when(giftCertificateDao).delete(NO_SUCH_CERTIFICATE_ID);
+        Assertions.assertThrows(NoSuchEntityException.class, () -> giftCertificateService.delete(NO_SUCH_CERTIFICATE_ID));
     }
 }

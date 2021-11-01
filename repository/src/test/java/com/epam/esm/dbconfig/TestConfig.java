@@ -1,15 +1,21 @@
 package com.epam.esm.dbconfig;
 
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.epam.esm")
@@ -18,10 +24,13 @@ public class TestConfig {
     private static final String SQL_SETUP = "classpath:db_setup.sql";
     private static final String SQL_INIT = "classpath:db_init.sql";
 
+    @Autowired
+    @Qualifier("test")
+    private LocalSessionFactoryBean sessionFactoryBean;
+
 
     @Bean
-    @Profile("dev")
-    public EmbeddedDatabase embeddedDatabase() {
+    public DataSource embeddedDatabase() {
         EmbeddedDatabaseBuilder databaseBuilder = new EmbeddedDatabaseBuilder();
         return databaseBuilder
                 .generateUniqueName(true)
@@ -34,12 +43,29 @@ public class TestConfig {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(EmbeddedDatabase embeddedDatabase) {
-        return new JdbcTemplate(embeddedDatabase);
+    public EntityManager entityManager() {
+        SessionFactory localSessionFactoryBean =  sessionFactoryBean.getObject();
+        return localSessionFactoryBean.createEntityManager();
     }
 
     @Bean
-    PlatformTransactionManager transactionManager(EmbeddedDatabase embeddedDatabase) {
-        return new DataSourceTransactionManager(embeddedDatabase);
+    public LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(embeddedDatabase());
+        sessionFactory.setPackagesToScan("com.epam.esm.entity");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+        return sessionFactory;
+    }
+
+    private Properties hibernateProperties() {
+        Properties hibernateProperties = new Properties();
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "none");
+        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        return hibernateProperties;
+    }
+
+    @Bean
+    PlatformTransactionManager transactionManager(EntityManagerFactory managerFactory) {
+        return new JpaTransactionManager(managerFactory);
     }
 }

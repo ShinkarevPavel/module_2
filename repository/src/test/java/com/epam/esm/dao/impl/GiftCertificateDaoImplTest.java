@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.epam.esm.configuration.SpringDataSourceConfiguration;
 import com.epam.esm.dao.EntityFields;
 import com.epam.esm.dbconfig.TestConfig;
 import com.epam.esm.entity.GiftCertificate;
@@ -12,21 +13,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TestConfig.class)
-@Transactional
 @ActiveProfiles("dev")
+@Transactional
 class GiftCertificateDaoImplTest {
 
     private static final String TAG_NAME_FOR_SEARCH= "IT";
@@ -42,9 +40,18 @@ class GiftCertificateDaoImplTest {
     private static final String UPDATED_DESCRIPTION = "updatedDescription";
     private static final int UPDATED_DURATION = 7;
 
-    private final GiftCertificateDaoImpl certificateDao;
+
+    private  GiftCertificateDaoImpl certificateDao;
+
+
     private static GiftCertificate newGiftCertificate;
     private static Map<String, Object> notNullFields;
+
+
+    @Autowired
+    public GiftCertificateDaoImplTest(GiftCertificateDaoImpl certificateDao) {
+        this.certificateDao = certificateDao;
+    }
 
     @BeforeAll
     static void prepare() {
@@ -61,11 +68,6 @@ class GiftCertificateDaoImplTest {
                 .createDate(LocalDateTime.now())
                 .lastUpdateDate(LocalDateTime.now())
                 .build();
-    }
-
-    @Autowired
-    GiftCertificateDaoImplTest(GiftCertificateDaoImpl certificateDao) {
-        this.certificateDao = certificateDao;
     }
 
     @Test

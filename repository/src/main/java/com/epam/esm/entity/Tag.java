@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "id")
+@EqualsAndHashCode(exclude = {"id", "giftCertificates"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {
@@ -22,7 +22,7 @@ public class Tag {
     @Column(length = 45, nullable = false)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tags")
     private List<GiftCertificate> giftCertificates = new ArrayList<>();
 
     @Override

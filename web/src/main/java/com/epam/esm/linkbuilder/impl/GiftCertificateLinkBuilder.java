@@ -16,7 +16,7 @@ public class GiftCertificateLinkBuilder extends AbstractBuilder<GiftCertificateD
 
     @Override
     public void addLinks(GiftCertificateDto giftCertificateDto) {
-        addIdLinks(GiftController.class, giftCertificateDto, giftCertificateDto.getId(), GET, UPDATE, DELETE);
+        addIdLinks(GiftController.class, giftCertificateDto, giftCertificateDto.getId(), SELF, UPDATE, DELETE);
         if (!CollectionUtils.isEmpty(giftCertificateDto.getTags())) {
             giftCertificateDto.getTags().forEach(tagDto -> tagLinkBuilder.addLinks(tagDto));
         }

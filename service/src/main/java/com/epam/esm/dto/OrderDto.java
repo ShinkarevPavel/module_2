@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "id")
+@EqualsAndHashCode(exclude = {"id", "certificates"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto extends RepresentationModel<OrderDto> {
@@ -33,4 +33,16 @@ public class OrderDto extends RepresentationModel<OrderDto> {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<GiftCertificateDto> certificates = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("OrderDto{");
+        sb.append("id=").append(id);
+        sb.append(", cost=").append(cost);
+        sb.append(", user=").append(user);
+        sb.append(", order_date=").append(order_date);
+        sb.append(", certificates=").append(certificates);
+        sb.append('}');
+        return sb.toString();
+    }
 }

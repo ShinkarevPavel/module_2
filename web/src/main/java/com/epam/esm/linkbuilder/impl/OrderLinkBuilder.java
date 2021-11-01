@@ -17,7 +17,7 @@ public class OrderLinkBuilder extends AbstractBuilder<OrderDto>{
 
     @Override
     public void addLinks(OrderDto orderDto) {
-        addIdLinks(OrderController.class, orderDto, orderDto.getId(), GET, UPDATE, DELETE);
+        addIdLinks(OrderController.class, orderDto, orderDto.getId(), SELF, UPDATE, DELETE);
         userLinkBuilder.addLinks(orderDto.getUser());
         orderDto.getCertificates().forEach(certificateLinkBuilder::addLinks);
     }

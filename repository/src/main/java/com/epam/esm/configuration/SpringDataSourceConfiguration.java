@@ -40,8 +40,7 @@ public class SpringDataSourceConfiguration {
         hikariConfig.setUsername(DB_USERNAME);
         hikariConfig.setPassword(DB_PASSWORD);
         hikariConfig.setMaximumPoolSize(MAX_POOL_SIZE);
-        HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
-        return hikariDataSource;
+        return new HikariDataSource(hikariConfig);
     }
 
     @Bean
@@ -57,7 +56,7 @@ public class SpringDataSourceConfiguration {
         localContainerEntityManagerFactoryBean.setDataSource(dataSource());
         localContainerEntityManagerFactoryBean.setPackagesToScan("com.epam.esm.entity");
         localContainerEntityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
-        return  localContainerEntityManagerFactoryBean;
+        return localContainerEntityManagerFactoryBean;
     }
 
 }

@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,13 +79,6 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Tag findOrCreateTag(Tag tag) {
         return findByName(tag.getName()).orElseGet(() -> create(tag));
-    }
-
-    @Override
-    public List<Tag> addCertificateTags(List<Tag> tags) {
-        List<Tag> tagsWithId = new ArrayList<>();
-        tags.forEach(t -> tagsWithId.add(findOrCreateTag(t)));
-        return tagsWithId;
     }
 
     @Override
