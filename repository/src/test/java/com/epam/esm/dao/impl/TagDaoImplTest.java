@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dbconfig.TestConfig;
+import com.epam.esm.entity.PageParameter;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
@@ -9,17 +10,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {TestConfig.class})
+@Transactional
 class TagDaoImplTest {
-    private static final int EXPECTED_LIST_SIZE = 4;
+    private static final int EXPECTED_LIST_SIZE = 1;
     private static final long EXPECTED_TAG_ID = 4L;
     private static final String EXPECTED_TAG_NAME = "Epam";
     private static final String CREATED_TAG_NAME = "newTag";
@@ -29,6 +32,7 @@ class TagDaoImplTest {
 
     private TagDao tagDao;
 
+    @Autowired
     public TagDaoImplTest(TagDao tagDao) {
         this.tagDao = tagDao;
     }
@@ -54,7 +58,7 @@ class TagDaoImplTest {
     @Test
     @Order(2)
     void delete() {
-        tagDao.delete(5l);
+        tagDao.delete(1l);
     }
 
     @Test ()
@@ -71,13 +75,13 @@ class TagDaoImplTest {
 
     @Test
     void findAll() {
-//        List<Tag> tags = tagDao.findAll();
-//        assertEquals(EXPECTED_LIST_SIZE, tags.size());
+        List<Tag> tags = tagDao.findAll(PageParameter.builder().page(0).size(1).build());
+        assertEquals(EXPECTED_LIST_SIZE, tags.size());
     }
 
     @Test
     void findOrCreateTag() {
-//        Tag tag = tagDao.findOrCreateTag(new Tag(EXPECTED_TAG_ID, EXPECTED_TAG_NAME));
-//        assertEquals(tag, expectedTag);
+        Tag tag = tagDao.findOrCreateTag(new Tag(EXPECTED_TAG_ID, EXPECTED_TAG_NAME));
+        assertEquals(tag, expectedTag);
     }
 }

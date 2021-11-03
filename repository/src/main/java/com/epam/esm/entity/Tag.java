@@ -3,15 +3,13 @@ package com.epam.esm.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "tags")
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id", "giftCertificates"})
+@EqualsAndHashCode(exclude = {"id"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {
@@ -21,9 +19,6 @@ public class Tag {
 
     @Column(length = 45, nullable = false)
     private String name;
-
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tags")
-    private List<GiftCertificate> giftCertificates = new ArrayList<>();
 
     @Override
     public String toString() {

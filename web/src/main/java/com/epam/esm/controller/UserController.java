@@ -34,9 +34,9 @@ public class UserController {
 
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable Long id, @Validated @RequestBody UserDto userDto) {
+    public UserDto update(@PathVariable Long id, @Validated @RequestBody UserDto userDto) {
         userDto.setId(id);
-        userService.update(userDto);
+        return userService.update(userDto);
     }
 
     @GetMapping(value = "/{id}")

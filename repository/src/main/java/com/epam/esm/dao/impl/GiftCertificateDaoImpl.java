@@ -6,7 +6,6 @@ import com.epam.esm.entity.PageParameter;
 import com.epam.esm.entity.SearchParameter;
 import com.epam.esm.entity.Tag;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -93,10 +92,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 query.orderBy(orderList);
             }
         }
-        return entityManager.createQuery(query)
+        List<GiftCertificate> listCertificate = entityManager.createQuery(query)
                 .setFirstResult((pageParameter.getPage()) * pageParameter.getSize())
                 .setMaxResults(pageParameter.getSize())
                 .getResultList();
+        return listCertificate;
     }
 
     private List<Order> buildSortedOrderList(List<String> fieldsForSort, List<String> orderSort, Root<GiftCertificate> root) {

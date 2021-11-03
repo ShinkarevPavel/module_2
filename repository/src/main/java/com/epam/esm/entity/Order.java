@@ -31,7 +31,7 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "order_certificate_associate",
                 joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"),
                 inverseJoinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"))

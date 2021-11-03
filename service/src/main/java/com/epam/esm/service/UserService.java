@@ -12,7 +12,7 @@ public interface UserService {
 
     UserDto getById(long id);
 
-    void update(UserDto userDto);
+    UserDto update(UserDto userDto);
 
     void delete(UserDto userDto);
 }

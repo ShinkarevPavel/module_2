@@ -1,8 +1,6 @@
 package com.epam.esm.dbconfig;
 
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,10 +22,6 @@ public class TestConfig {
     private static final String SQL_SETUP = "classpath:db_setup.sql";
     private static final String SQL_INIT = "classpath:db_init.sql";
 
-    @Autowired
-    @Qualifier("test")
-    private LocalSessionFactoryBean sessionFactoryBean;
-
 
     @Bean
     public DataSource embeddedDatabase() {
@@ -44,7 +38,7 @@ public class TestConfig {
 
     @Bean
     public EntityManager entityManager() {
-        SessionFactory localSessionFactoryBean =  sessionFactoryBean.getObject();
+        SessionFactory localSessionFactoryBean =  sessionFactory().getObject();
         return localSessionFactoryBean.createEntityManager();
     }
 

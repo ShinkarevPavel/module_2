@@ -30,8 +30,6 @@ public class TagController {
 
     @GetMapping
     public List<TagDto> getAll(@Valid PageParameterDto pageParameterDto) {
-        System.out.println("tagController page " + pageParameterDto.getPage());
-        System.out.println("tagController size " + pageParameterDto.getSize());
         return tagService.getAll(pageParameterDto).stream()
                 .peek(linkBuilder::addLinks)
                 .collect(Collectors.toList());

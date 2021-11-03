@@ -2,28 +2,25 @@ package com.epam.esm.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.epam.esm.configuration.SpringDataSourceConfiguration;
-import com.epam.esm.dao.EntityFields;
 import com.epam.esm.dbconfig.TestConfig;
 import com.epam.esm.entity.GiftCertificate;
-import org.junit.jupiter.api.BeforeAll;
+import com.epam.esm.entity.PageParameter;
+import com.epam.esm.entity.SearchParameter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TestConfig.class)
-@ActiveProfiles("dev")
 @Transactional
 class GiftCertificateDaoImplTest {
 
@@ -44,8 +41,9 @@ class GiftCertificateDaoImplTest {
     private  GiftCertificateDaoImpl certificateDao;
 
 
-    private static GiftCertificate newGiftCertificate;
-    private static Map<String, Object> notNullFields;
+    private GiftCertificate newGiftCertificate;
+    private PageParameter pageParameter;
+    private SearchParameter searchParameter;
 
 
     @Autowired
@@ -53,13 +51,8 @@ class GiftCertificateDaoImplTest {
         this.certificateDao = certificateDao;
     }
 
-    @BeforeAll
-    static void prepare() {
-        notNullFields = new HashMap<>();
-        notNullFields.put(EntityFields.NAME.getName(), UPDATED_NAME);
-        notNullFields.put(EntityFields.DESCRIPTION.getName(), UPDATED_DESCRIPTION);
-        notNullFields.put(EntityFields.DURATION.getName(), UPDATED_DURATION);
-
+    @BeforeEach
+    void prepare() {
         newGiftCertificate = GiftCertificate.builder()
                 .name(NEW_TAG_NAME)
                 .description(NEW_TAG_DESCRIPTION)
@@ -68,12 +61,25 @@ class GiftCertificateDaoImplTest {
                 .createDate(LocalDateTime.now())
                 .lastUpdateDate(LocalDateTime.now())
                 .build();
+
+        pageParameter = PageParameter.builder()
+                .size(2)
+                .page(0)
+                .build();
+        searchParameter = SearchParameter.builder()
+                .tagName(List.of("IT"))
+                .fieldsForSort(List.of("duration"))
+                .orderSort(List.of("desc"))
+                .searchPart("")
+                .build();
+
     }
 
     @Test
     @Order(1)
     void create() {
         GiftCertificate actual = certificateDao.create(newGiftCertificate);
+        System.out.println(actual);
         assertNotNull(actual.getId());
         assertEquals(actual.getName(), NEW_TAG_NAME);
         assertEquals(actual.getDescription(), NEW_TAG_DESCRIPTION);
@@ -89,6 +95,7 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    @Order(3)
     void notFindById() {
         Optional<GiftCertificate> actual = certificateDao.findById(NEW_CERTIFICATE_ID);
         assertFalse(actual.isPresent());
@@ -97,21 +104,13 @@ class GiftCertificateDaoImplTest {
     @Test
     @Order(2)
     void delete() {
-        certificateDao.delete(NEW_CERTIFICATE_ID);
+        certificateDao.delete(1L);
     }
 
     @Test
     void findByCertificateFieldAndSortByTagAndPartOFSearch() {
-//        List<GiftCertificate> actual = certificateDao
-//                .findByCertificateFieldAndSort(TAG_NAME_FOR_SEARCH, PART_OF_SEARCH, null, null);
-//    assertEquals(actual.size(), 1);
+        List<GiftCertificate> certificates = certificateDao.findByCertificateFieldAndSort(searchParameter, pageParameter);
+        assertEquals(3, certificates.get(0).getDuration());
+        assertEquals(2, certificates.size());
     }
-
-    @Test
-    void findByCertificateFieldAndSortIfAllParametersNull() {
-//        List<GiftCertificate> actual = certificateDao
-//                .findByCertificateFieldAndSort(null, null, null, null);
-//        assertEquals(actual.size(), 3);
-    }
-
 }

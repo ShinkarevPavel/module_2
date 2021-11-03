@@ -5,4 +5,4 @@ VALUES ('certificate 1', 'description 1', 1.1, '2021-10-08 11:11:11', '2021-01-0
 
 INSERT INTO tags ("NAME") VALUES ('IT'), ('HR'), ('Java'), ('Epam');
 
-INSERT INTO tag_certificate_associate (gift_id, tag_id) VALUES (1, 1), (1, 3), (2, 2);
+INSERT INTO tag_certificate_associate (gift_id, tag_id) VALUES (1, 1), (1, 3), (2, 2), (2, 1), (3, 1);

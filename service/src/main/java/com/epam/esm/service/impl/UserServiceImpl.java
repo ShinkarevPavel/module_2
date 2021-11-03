@@ -47,11 +47,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void update(UserDto userDto) {
+    public UserDto update(UserDto userDto) {
         if (!userDao.isContains(userDto.getId())) {
             throw new NoSuchEntityException();
         }
-        userDao.update(DtoMapper.dtoToUser(userDto));
+        User updatedUser = userDao.update(DtoMapper.dtoToUser(userDto));
+        return DtoMapper.userToDto(updatedUser);
     }
 
     @Override
