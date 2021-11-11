@@ -6,6 +6,7 @@ import com.epam.esm.linkbuilder.LinkBuilder;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserDto create(@Validated @RequestBody UserDto userDto) {
         UserDto uDto = userService.create(userDto);
         linkBuilder.addLinks(uDto);
@@ -34,12 +36,16 @@ public class UserController {
 
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserDto update(@PathVariable Long id, @Validated @RequestBody UserDto userDto) {
         userDto.setId(id);
+        System.out.println("--------------Controller--------------");
+        System.out.println(userDto);
         return userService.update(userDto);
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserDto getById(@PathVariable Long id) {
         UserDto userDto = userService.getById(id);
         linkBuilder.addLinks(userDto);
@@ -47,6 +53,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<UserDto> getAll(@Validated PageParameterDto pageParameterDto) {
         List<UserDto> users = userService.getAll(pageParameterDto);
         users.forEach(linkBuilder::addLinks);

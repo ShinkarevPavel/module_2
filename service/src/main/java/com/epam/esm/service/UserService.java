@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.User;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface UserService {
     UserDto update(UserDto userDto);
 
     void delete(UserDto userDto);
+
+    User getByUsername(String username);
 }

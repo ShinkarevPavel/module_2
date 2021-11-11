@@ -57,14 +57,16 @@ public class DtoMapper {
     public static User dtoToUser(UserDto userDto) {
         return User.builder()
                 .id(Objects.nonNull(userDto.getId()) ? userDto.getId() : null)
-                .name(userDto.getName())
+                .username(userDto.getUsername())
+                .role(userDto.getRole())
                 .build();
     }
 
     public static UserDto userToDto(User user) {
         return UserDto.builder()
                 .id(Objects.nonNull(user.getId()) ? user.getId() : null)
-                .name(user.getName())
+                .username(user.getUsername())
+                .role(user.getRole())
                 .build();
     }
 

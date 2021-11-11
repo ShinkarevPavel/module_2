@@ -51,19 +51,19 @@ class UserServiceImplTest {
     void prepare() {
         createdUser = User.builder()
                 .id(CREATE_USER_ID)
-                .name(CREATE_USER_NAME)
+                .username(CREATE_USER_NAME)
                 .build();
         createUserDto = UserDto.builder()
-                .name(CREATE_USER_NAME)
+                .username(CREATE_USER_NAME)
                 .build();
 
         updatableUser = User.builder()
                 .id(UPDATE_USER_ID)
-                .name(UPDATE_USER_NAME)
+                .username(UPDATE_USER_NAME)
                 .build();
         updateUserDto = UserDto.builder()
                 .id(UPDATE_USER_ID)
-                .name(UPDATE_USER_NAME)
+                .username(UPDATE_USER_NAME)
                 .build();
     }
 
@@ -95,7 +95,7 @@ class UserServiceImplTest {
         when(userDao.findById(CREATE_USER_ID)).thenReturn(Optional.of(createdUser));
         UserDto userDto =userService.getById(CREATE_USER_ID);
         Assertions.assertEquals(userDto.getId(), createdUser.getId());
-        Assertions.assertEquals(userDto.getName(), createdUser.getName());
+        Assertions.assertEquals(userDto.getUsername(), createdUser.getUsername());
     }
 
     @Test

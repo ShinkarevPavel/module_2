@@ -90,13 +90,20 @@ class ApplicationExceptionHandler {
         return new ResponseEntity<>(createResponse(40001, message), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<Object> handleEntryNotFoundException(JwtAuthenticationException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
+        response.put(ERROR_CODE, e.getHttpStatus());
+        return new ResponseEntity<>(response, e.getHttpStatus());
+    }
+
     private Map<String, Object> createResponse(int errorCode, String errorDescription) {
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, errorDescription);
         response.put(ERROR_CODE, errorCode);
         return response;
     }
-
 
     private String resolveBindingResultErrors(BindingResult bindingResult) {
         return bindingResult.getFieldErrors().stream()

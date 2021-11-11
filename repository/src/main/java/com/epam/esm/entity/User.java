@@ -1,6 +1,7 @@
 package com.epam.esm.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(exclude = "id")
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 public class User {
 
     @Id
@@ -19,6 +21,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 250, nullable = false)
+    private String password;
+
     @Column(length = 45, nullable = false)
-    private String name;
+    private String username;
+
+    private Role role;
 }
