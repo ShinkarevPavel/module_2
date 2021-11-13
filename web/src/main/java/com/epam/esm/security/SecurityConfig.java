@@ -1,12 +1,13 @@
 package com.epam.esm.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.exception.ApplicationExceptionHandler;
+import com.epam.esm.exception.JsonResponseSender;
+import com.epam.esm.exception.JwtAuthenticationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +15,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 
 @Configuration
 @EnableWebSecurity
@@ -21,14 +28,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigure jwtConfigure;
+    private JwtTokenFilter jwtTokenFilter;
+    private ApplicationExceptionHandler applicationExceptionHandler;
+    private final JsonResponseSender jsonResponseSender;
 
-    public SecurityConfig(JwtConfigure jwtConfigure) {
+    public SecurityConfig(JwtConfigure jwtConfigure,
+                          JwtTokenFilter jwtTokenFilter,
+                          ApplicationExceptionHandler applicationExceptionHandler,
+                          JsonResponseSender jsonResponseSender) {
         this.jwtConfigure = jwtConfigure;
+        this.jwtTokenFilter = jwtTokenFilter;
+        this.applicationExceptionHandler = applicationExceptionHandler;
+        this.jsonResponseSender = jsonResponseSender;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("Security Config");
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -37,6 +52,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/certificates/**").permitAll()
                 .antMatchers("/api/v3/auth/**").permitAll()
                 .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        (httpServletRequest, httpServletResponse, e) -> handleError(httpServletRequest, httpServletResponse)
+                )
                 .and()
                 .apply(jwtConfigure);
     }
@@ -52,5 +73,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(12);
     }
 
+    private void handleError(HttpServletRequest request, HttpServletResponse response) throws IOException {
+                    Object responseObject = applicationExceptionHandler 
+                    .handleJwtAuthenticationException(new JwtAuthenticationException("auth.error.incorrect_token", HttpStatus.UNAUTHORIZED),
+                            request.getLocale());
+            jsonResponseSender.send(response, responseObject);
+    }
 
 }

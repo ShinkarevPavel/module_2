@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-class ApplicationExceptionHandler {
+public class ApplicationExceptionHandler {
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_CODE = "errorCode";
     private final ResourceBundleMessageSource messages;
@@ -91,10 +91,10 @@ class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(JwtAuthenticationException.class)
-    public ResponseEntity<Object> handleEntryNotFoundException(JwtAuthenticationException e, Locale locale) {
+    public ResponseEntity<Object> handleJwtAuthenticationException(JwtAuthenticationException e, Locale locale) {
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
-        response.put(ERROR_CODE, e.getHttpStatus());
+        response.put(ERROR_CODE, 40101);
         return new ResponseEntity<>(response, e.getHttpStatus());
     }
 

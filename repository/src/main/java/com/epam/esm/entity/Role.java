@@ -3,8 +3,11 @@ package com.epam.esm.entity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import javax.persistence.Table;
 import java.util.Set;
 
+
+@Table(name = "roles")
 public enum Role {
 
     USER("U"),

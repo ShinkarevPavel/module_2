@@ -2,6 +2,7 @@ package com.epam.esm.security;
 
 import com.epam.esm.exception.JwtAuthenticationException;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 @Component
 public class JwtTokenFilter extends GenericFilterBean {
+
     private final JwtTokenProvider jwtTokenProvider;
 
 
@@ -27,18 +29,16 @@ public class JwtTokenFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest);
-        try {
-            if (Strings.isNotEmpty(token) && jwtTokenProvider.validateToken(token)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                if (Objects.nonNull(authentication)) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+        //TODO token.substring(7) startwith
+        if (Strings.isNotEmpty(token) && jwtTokenProvider.validateToken(token.substring(7), (HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse)) {
+            Authentication authentication = jwtTokenProvider.getAuthentication(token.substring(7));
+            if (Objects.nonNull(authentication)) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (JwtAuthenticationException e) {
-            SecurityContextHolder.clearContext();
-            ((HttpServletResponse) servletResponse).sendError(e.getHttpStatus().value());
-            throw new JwtAuthenticationException("Error"); //TODO
+        } else {
+
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

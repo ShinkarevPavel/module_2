@@ -5,6 +5,7 @@ import com.epam.esm.dto.UserDto;
 import com.epam.esm.linkbuilder.LinkBuilder;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +21,7 @@ public class UserController {
     private final LinkBuilder<UserDto> linkBuilder;
 
     @Autowired
-    public UserController(UserService userService, LinkBuilder<UserDto> linkBuilder) {
+    public UserController(@Qualifier("userServiceImpl") UserService userService, LinkBuilder<UserDto> linkBuilder) {
         this.userService = userService;
         this.linkBuilder = linkBuilder;
     }
@@ -37,9 +38,8 @@ public class UserController {
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserDto update(@PathVariable Long id, @Validated @RequestBody UserDto userDto) {
+    public UserDto update(@PathVariable Long id, @Validated(UserDto.Update.class) @RequestBody UserDto userDto) {
         userDto.setId(id);
-        System.out.println("--------------Controller--------------");
         System.out.println(userDto);
         return userService.update(userDto);
     }

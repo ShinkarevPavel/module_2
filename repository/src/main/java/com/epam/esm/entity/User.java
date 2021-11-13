@@ -14,6 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
+
 public class User {
 
     @Id

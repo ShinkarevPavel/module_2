@@ -15,15 +15,23 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class UserDto extends RepresentationModel<UserDto> {
 
+    public interface Create {
+    }
+
+    public interface Update {
+    }
+
+    @Null(groups = Create.class)
     private Long id;
+
     @JsonIgnore
     private Role role;
 
-    @Size(min = 8, max = 250)
+    @Size(min = 8, max = 250, groups = {Create.class, Update.class})
     private String password;
 
-    @NotEmpty
-    @Size(min = 5, max = 45)
+    @NotEmpty(groups = Create.class)
+    @Size(min = 5, max = 45, groups = {Create.class, Update.class})
     private String username;
 
     @Override

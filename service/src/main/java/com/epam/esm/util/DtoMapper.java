@@ -58,6 +58,7 @@ public class DtoMapper {
         return User.builder()
                 .id(Objects.nonNull(userDto.getId()) ? userDto.getId() : null)
                 .username(userDto.getUsername())
+                .password(userDto.getPassword())
                 .role(userDto.getRole())
                 .build();
     }
@@ -66,6 +67,7 @@ public class DtoMapper {
         return UserDto.builder()
                 .id(Objects.nonNull(user.getId()) ? user.getId() : null)
                 .username(user.getUsername())
+                .password(user.getPassword())
                 .role(user.getRole())
                 .build();
     }
