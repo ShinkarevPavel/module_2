@@ -46,8 +46,8 @@ public class UserController {
 
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserDto getById(@PathVariable Long id) {
-        UserDto userDto = userService.getById(id);
+    public UserDto getById(@PathVariable Long userId) {
+        UserDto userDto = userService.getById(userId);
         linkBuilder.addLinks(userDto);
         return userDto;
     }
@@ -58,5 +58,12 @@ public class UserController {
         List<UserDto> users = userService.getAll(pageParameterDto);
         users.forEach(linkBuilder::addLinks);
         return users;
+    }
+
+    @DeleteMapping(value = "/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable Long userId) {
+        userService.delete(userId);
     }
 }

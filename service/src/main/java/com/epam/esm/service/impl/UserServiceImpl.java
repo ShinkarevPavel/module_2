@@ -66,10 +66,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void delete(UserDto userDto) {
-        if (!userDao.isContains(userDto.getId())) {
+    public void delete(Long userId) {
+        if (!userDao.isContains(userId)) {
             throw new NoSuchEntityException();
         }
-        userDao.delete(userDto.getId());
+        userDao.delete(userId);
     }
 }

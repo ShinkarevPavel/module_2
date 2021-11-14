@@ -101,6 +101,6 @@ class UserServiceImplTest {
     @Test
     void delete() {
         when(userDao.isContains(updatableUser.getId())).thenReturn(false);
-        Assertions.assertThrows(NoSuchEntityException.class, () -> userService.delete(updateUserDto));
+        Assertions.assertThrows(NoSuchEntityException.class, () -> userService.delete(updateUserDto.getId()));
     }
 }

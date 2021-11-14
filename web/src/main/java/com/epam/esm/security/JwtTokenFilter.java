@@ -21,7 +21,7 @@ public class JwtTokenFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    public JwtTokenFilter(@Lazy JwtTokenProvider jwtTokenProvider) {
+    public JwtTokenFilter(@Lazy JwtTokenProvider jwtTokenProvider) { //TODO recursion
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

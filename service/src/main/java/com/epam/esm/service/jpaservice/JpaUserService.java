@@ -8,12 +8,15 @@ import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.DtoMapper;
 import com.epam.esm.util.JpaRepoUserMapper;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("jpaUserService")
 public class JpaUserService implements UserService {
@@ -38,7 +41,9 @@ public class JpaUserService implements UserService {
 
     @Override
     public List<UserDto> getAll(PageParameterDto pageParameterDto) {
-        return null;
+        Iterable<User> users = userRepository.findAll(PageRequest.of(pageParameterDto.getPage(),pageParameterDto.getSize()));
+        List<User> userList = IteratorUtils.toList(users.iterator());
+        return userList.stream().map(DtoMapper::userToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -58,8 +63,8 @@ public class JpaUserService implements UserService {
     }
 
     @Override
-    public void delete(UserDto userDto) {
-
+    public void delete(Long userId) {
+        userRepository.deleteById(userId);
     }
 
     @Override

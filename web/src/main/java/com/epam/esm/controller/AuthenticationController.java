@@ -1,16 +1,13 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.jparepository.UserRepository;
 import com.epam.esm.dto.AuthenticationRequestDto;
 import com.epam.esm.dto.JwtDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.JwtAuthenticationException;
-import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.linkbuilder.impl.UserLinkBuilder;
 import com.epam.esm.security.JwtTokenProvider;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.jpaservice.JpaUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
