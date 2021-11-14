@@ -2,6 +2,7 @@ package com.epam.esm.dto;
 
 import com.epam.esm.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -25,9 +26,12 @@ public class UserDto extends RepresentationModel<UserDto> {
     private Long id;
 
     @JsonIgnore
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 
+    @NotEmpty(groups = Create.class)
     @Size(min = 8, max = 250, groups = {Create.class, Update.class})
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotEmpty(groups = Create.class)

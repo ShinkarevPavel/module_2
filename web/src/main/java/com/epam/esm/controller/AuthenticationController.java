@@ -48,9 +48,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     public JwtDto authenticate(@RequestBody AuthenticationRequestDto requestDto) throws JwtAuthenticationException {
         try {
-            User user = userService.getByUsername(requestDto.getUsername());
-            System.out.println(user);
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
+            User user = userService.getByUsername(requestDto.getUsername());
             String token = jwtTokenProvider.createToken(requestDto.getUsername(), user.getRole().name());
             JwtDto jwtDto = JwtDto.builder().username(requestDto.getUsername()).token(token).build();
             return jwtDto;
@@ -66,7 +65,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public UserDto signUp(@Validated (UserDto.Create.class) UserDto userDto) {
+    public UserDto signUp(@Validated (UserDto.Create.class) @RequestBody UserDto userDto) {
         UserDto creatableUser = userService.create(userDto);
         userLinkBuilder.addLinks(creatableUser);
         return creatableUser;

@@ -8,6 +8,7 @@ import com.epam.esm.entity.User;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.DtoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
     private UserRepository userRepository;
+
 
 
     public UserServiceImpl(UserDao userDao, UserRepository userRepository) {

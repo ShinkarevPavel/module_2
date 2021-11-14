@@ -21,7 +21,7 @@ public class UserController {
     private final LinkBuilder<UserDto> linkBuilder;
 
     @Autowired
-    public UserController(@Qualifier("userServiceImpl") UserService userService, LinkBuilder<UserDto> linkBuilder) {
+    public UserController(@Qualifier("jpaUserService") UserService userService, LinkBuilder<UserDto> linkBuilder) {
         this.userService = userService;
         this.linkBuilder = linkBuilder;
     }

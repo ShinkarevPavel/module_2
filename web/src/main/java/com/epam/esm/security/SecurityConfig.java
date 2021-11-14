@@ -1,5 +1,6 @@
 package com.epam.esm.security;
 
+import com.epam.esm.entity.Role;
 import com.epam.esm.exception.ApplicationExceptionHandler;
 import com.epam.esm.exception.JsonResponseSender;
 import com.epam.esm.exception.JwtAuthenticationException;
@@ -51,6 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/v1/certificates/**").permitAll()
                 .antMatchers("/api/v3/auth/**").permitAll()
+                .antMatchers("/api/v2/orders/**").hasAuthority(Role.ADMIN.name())
+                .antMatchers("/api/v1/tags/**").hasAuthority(Role.ADMIN.name())
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
@@ -74,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void handleError(HttpServletRequest request, HttpServletResponse response) throws IOException {
-                    Object responseObject = applicationExceptionHandler 
+                    Object responseObject = applicationExceptionHandler
                     .handleJwtAuthenticationException(new JwtAuthenticationException("auth.error.incorrect_token", HttpStatus.UNAUTHORIZED),
                             request.getLocale());
             jsonResponseSender.send(response, responseObject);
