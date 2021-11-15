@@ -1,9 +1,11 @@
-package com.epam.esm.security;
+package com.epam.esm.configuration;
 
 import com.epam.esm.entity.Role;
 import com.epam.esm.exception.ApplicationExceptionHandler;
 import com.epam.esm.exception.JsonResponseSender;
 import com.epam.esm.exception.JwtAuthenticationException;
+import com.epam.esm.security.JwtConfigure;
+import com.epam.esm.security.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,8 +31,8 @@ import java.io.IOException;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigure jwtConfigure;
-    private JwtTokenFilter jwtTokenFilter;
-    private ApplicationExceptionHandler applicationExceptionHandler;
+    private final JwtTokenFilter jwtTokenFilter;
+    private final ApplicationExceptionHandler applicationExceptionHandler;
     private final JsonResponseSender jsonResponseSender;
 
     public SecurityConfig(JwtConfigure jwtConfigure,

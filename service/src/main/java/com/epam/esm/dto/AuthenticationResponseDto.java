@@ -9,7 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class JwtDto {
+public class AuthenticationResponseDto {
+
     private String username;
     private String token;
 

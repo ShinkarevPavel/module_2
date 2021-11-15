@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -82,6 +83,14 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(NotUniqueUsernameException.class)
+    public ResponseEntity<Object> handleNotUniqueUsernameException(NotUniqueUsernameException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
+        response.put(ERROR_CODE, 40901);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
 
     @ExceptionHandler(value = BindException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(BindException e) {
@@ -90,12 +99,13 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(createResponse(40001, message), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(JwtAuthenticationException.class)
-    public ResponseEntity<Object> handleJwtAuthenticationException(JwtAuthenticationException e, Locale locale) {
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleJwtAuthenticationException(AuthenticationException e, Locale locale) {
+        System.out.println("--------------------------------------------------------------------------------");
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
         response.put(ERROR_CODE, 40101);
-        return new ResponseEntity<>(response, e.getHttpStatus());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     private Map<String, Object> createResponse(int errorCode, String errorDescription) {

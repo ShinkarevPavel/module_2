@@ -40,11 +40,10 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public UserDto update(@PathVariable Long id, @Validated(UserDto.Update.class) @RequestBody UserDto userDto) {
         userDto.setId(id);
-        System.out.println(userDto);
         return userService.update(userDto);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public UserDto getById(@PathVariable Long userId) {
         UserDto userDto = userService.getById(userId);

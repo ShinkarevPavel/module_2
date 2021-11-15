@@ -5,12 +5,13 @@ import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.exception.NotUniqueUsernameException;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.DtoMapper;
 import com.epam.esm.util.JpaRepoUserMapper;
-import org.apache.commons.collections4.IteratorUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,9 @@ public class JpaUserService implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
+        if (!isUsernameUnique(userDto.getUsername())) {
+            throw new NotUniqueUsernameException("auth.error.not_unique_username");
+        }
         String encodePassword = encodePassword(userDto.getPassword());
         userDto.setPassword(encodePassword);
         return DtoMapper.userToDto(userRepository.save(DtoMapper.dtoToUser(userDto)));
@@ -41,8 +45,8 @@ public class JpaUserService implements UserService {
 
     @Override
     public List<UserDto> getAll(PageParameterDto pageParameterDto) {
-        Iterable<User> users = userRepository.findAll(PageRequest.of(pageParameterDto.getPage(),pageParameterDto.getSize()));
-        List<User> userList = IteratorUtils.toList(users.iterator());
+        Page<User> users = userRepository.findAll(PageRequest.of(pageParameterDto.getPage(),pageParameterDto.getSize()));
+        List<User> userList = users.getContent();
         return userList.stream().map(DtoMapper::userToDto).collect(Collectors.toList());
     }
 
@@ -53,6 +57,9 @@ public class JpaUserService implements UserService {
 
     @Override
     public UserDto update(UserDto userDto) {
+        if (!isUsernameUnique(userDto.getUsername())) {
+            throw new NotUniqueUsernameException("auth.error.not_unique_username");
+        }
         if (Strings.isNotEmpty(userDto.getPassword())) {
             String encodePassword = encodePassword(userDto.getPassword());
             userDto.setPassword(encodePassword);
@@ -70,6 +77,10 @@ public class JpaUserService implements UserService {
     @Override
     public User getByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new NoSuchEntityException("user.username_is_not_present"));
+    }
+
+    private boolean isUsernameUnique(String username) {
+        return userRepository.findByUsername(username).isEmpty();
     }
 
     private String encodePassword(String password) {

@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.AuthenticationRequestDto;
-import com.epam.esm.dto.JwtDto;
+import com.epam.esm.dto.AuthenticationResponseDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.JwtAuthenticationException;
@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,22 +45,16 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public JwtDto authenticate(@RequestBody AuthenticationRequestDto requestDto) throws JwtAuthenticationException {
+    public AuthenticationResponseDto authenticate(@RequestBody AuthenticationRequestDto requestDto) throws JwtAuthenticationException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
             User user = userService.getByUsername(requestDto.getUsername());
             String token = jwtTokenProvider.createToken(requestDto.getUsername(), user.getRole().name());
-            JwtDto jwtDto = JwtDto.builder().username(requestDto.getUsername()).token(token).build();
-            return jwtDto;
+            AuthenticationResponseDto authenticationResponseDto = AuthenticationResponseDto.builder().username(requestDto.getUsername()).token(token).build();
+            return authenticationResponseDto;
         } catch (AuthenticationException e) {
             throw new JwtAuthenticationException("auth.error.incorrect_auth_pair", HttpStatus.UNAUTHORIZED);
         }
-    }
-
-    @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-        securityContextLogoutHandler.logout(request, response, null);
     }
 
     @PostMapping("/signup")
