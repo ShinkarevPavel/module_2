@@ -13,17 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/v3/auth")
@@ -50,8 +44,7 @@ public class AuthenticationController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
             User user = userService.getByUsername(requestDto.getUsername());
             String token = jwtTokenProvider.createToken(requestDto.getUsername(), user.getRole().name());
-            AuthenticationResponseDto authenticationResponseDto = AuthenticationResponseDto.builder().username(requestDto.getUsername()).token(token).build();
-            return authenticationResponseDto;
+            return AuthenticationResponseDto.builder().username(requestDto.getUsername()).token(token).build();
         } catch (AuthenticationException e) {
             throw new JwtAuthenticationException("auth.error.incorrect_auth_pair", HttpStatus.UNAUTHORIZED);
         }

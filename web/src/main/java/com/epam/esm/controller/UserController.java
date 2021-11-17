@@ -21,7 +21,8 @@ public class UserController {
     private final LinkBuilder<UserDto> linkBuilder;
 
     @Autowired
-    public UserController(@Qualifier("jpaUserService") UserService userService, LinkBuilder<UserDto> linkBuilder) {
+    public UserController(@Qualifier("jpaUserService") UserService userService,
+                          LinkBuilder<UserDto> linkBuilder) {
         this.userService = userService;
         this.linkBuilder = linkBuilder;
     }
@@ -35,16 +36,16 @@ public class UserController {
         return uDto;
     }
 
-    @PatchMapping(value = "/{id}")
+    @PatchMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public UserDto update(@PathVariable Long id, @Validated(UserDto.Update.class) @RequestBody UserDto userDto) {
-        userDto.setId(id);
+    @PreAuthorize("authentication.principal.userId == #userId || hasAuthority('ADMIN')")
+    public UserDto update(@PathVariable Long userId, @Validated(UserDto.Update.class) @RequestBody UserDto userDto) {
+        userDto.setId(userId);
         return userService.update(userDto);
     }
 
     @GetMapping(value = "/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("authentication.principal.userId == #userId || hasAuthority('ADMIN')")
     public UserDto getById(@PathVariable Long userId) {
         UserDto userDto = userService.getById(userId);
         linkBuilder.addLinks(userDto);

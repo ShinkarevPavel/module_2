@@ -101,7 +101,6 @@ public class ApplicationExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Object> handleJwtAuthenticationException(AuthenticationException e, Locale locale) {
-        System.out.println("--------------------------------------------------------------------------------");
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
         response.put(ERROR_CODE, 40101);
