@@ -45,7 +45,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/{userId}")
-    @PreAuthorize("authentication.principal.userId == #userId || hasAuthority('ADMIN')")
+//    @PreAuthorize("authentication.principal.userId == #userId || hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserDto getById(@PathVariable Long userId) {
         UserDto userDto = userService.getById(userId);
         linkBuilder.addLinks(userDto);
