@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,7 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-class ApplicationExceptionHandler {
+public class ApplicationExceptionHandler {
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_CODE = "errorCode";
     private final ResourceBundleMessageSource messages;
@@ -82,6 +83,14 @@ class ApplicationExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(NotUniqueUsernameException.class)
+    public ResponseEntity<Object> handleNotUniqueUsernameException(NotUniqueUsernameException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
+        response.put(ERROR_CODE, 40901);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
 
     @ExceptionHandler(value = BindException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(BindException e) {
@@ -90,13 +99,20 @@ class ApplicationExceptionHandler {
         return new ResponseEntity<>(createResponse(40001, message), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleJwtAuthenticationException(AuthenticationException e, Locale locale) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(e.getMessage(), null, locale));
+        response.put(ERROR_CODE, 40101);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
     private Map<String, Object> createResponse(int errorCode, String errorDescription) {
         Map<String, Object> response = new HashMap<>();
         response.put(ERROR_MESSAGE, errorDescription);
         response.put(ERROR_CODE, errorCode);
         return response;
     }
-
 
     private String resolveBindingResultErrors(BindingResult bindingResult) {
         return bindingResult.getFieldErrors().stream()

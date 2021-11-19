@@ -1,0 +1,3 @@
+com\epam\esm\dao\impl\GiftCertificateDaoImplTest.class
+com\epam\esm\dao\impl\TagDaoImplTest.class
+com\epam\esm\dbconfig\TestConfig.class

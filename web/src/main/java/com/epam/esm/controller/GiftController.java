@@ -7,6 +7,7 @@ import com.epam.esm.linkbuilder.LinkBuilder;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public class GiftController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto create(@Validated(GiftCertificateDto.Create.class) @RequestBody GiftCertificateDto certificateDto) {
         GiftCertificateDto giftCertificateDto = giftCertificateService.create(certificateDto);
         linkBuilder.addLinks(giftCertificateDto);
@@ -43,6 +45,7 @@ public class GiftController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void update(@PathVariable Long id, @Validated(GiftCertificateDto.Update.class) @RequestBody GiftCertificateDto giftCertificateDto) {
         giftCertificateDto.setId(id);
         giftCertificateService.update(giftCertificateDto);
@@ -50,6 +53,7 @@ public class GiftController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void delete(@PathVariable Long id) {
         giftCertificateService.delete(id);
     }
