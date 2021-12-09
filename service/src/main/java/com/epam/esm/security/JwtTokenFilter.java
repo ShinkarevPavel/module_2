@@ -26,7 +26,8 @@ public class JwtTokenFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
+        String modeThreadlocal = SecurityContextHolder.MODE_THREADLOCAL;
+        SecurityContextHolder.setStrategyName(modeThreadlocal);
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest);
         if (Strings.isNotEmpty(token) && jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);

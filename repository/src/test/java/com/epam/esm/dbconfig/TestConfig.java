@@ -42,7 +42,7 @@ public class TestConfig {
         return localSessionFactoryBean.createEntityManager();
     }
 
-    @Bean
+    @Bean("entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(embeddedDatabase());
@@ -62,4 +62,5 @@ public class TestConfig {
     PlatformTransactionManager transactionManager(EntityManagerFactory managerFactory) {
         return new JpaTransactionManager(managerFactory);
     }
+
 }

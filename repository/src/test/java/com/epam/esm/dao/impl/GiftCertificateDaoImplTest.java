@@ -24,18 +24,12 @@ import java.util.Optional;
 @Transactional
 class GiftCertificateDaoImplTest {
 
-    private static final String TAG_NAME_FOR_SEARCH= "IT";
-    private static final String PART_OF_SEARCH = "descr";
-
     private static final long CERTIFICATE_ID = 1l;
     private static final long NEW_CERTIFICATE_ID = 4l;
     private static final String NEW_TAG_NAME = "newName";
     private static final String NEW_TAG_DESCRIPTION = "newDescription";
     private static final double NEW_TAG_PRICE = 22.0;
     private static final int NEW_TAG_DURATION = 5;
-    private static final String UPDATED_NAME = "updatedName";
-    private static final String UPDATED_DESCRIPTION = "updatedDescription";
-    private static final int UPDATED_DURATION = 7;
 
 
     private  GiftCertificateDaoImpl certificateDao;

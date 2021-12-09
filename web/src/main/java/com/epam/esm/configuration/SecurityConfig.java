@@ -83,5 +83,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             request.getLocale());
             jsonResponseSender.send(response, responseObject);
     }
-
 }

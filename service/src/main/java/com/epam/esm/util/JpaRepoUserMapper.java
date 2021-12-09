@@ -2,12 +2,10 @@ package com.epam.esm.util;
 
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import com.epam.esm.service.jpaservice.JpaUserService;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = JpaUserService.class)
 public interface JpaRepoUserMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
