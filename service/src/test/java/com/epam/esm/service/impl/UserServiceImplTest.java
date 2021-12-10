@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.dao.jparepository.UserRepository;
 import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -36,13 +38,15 @@ class UserServiceImplTest {
     private UserDto createUserDto;
     private UserDto updateUserDto;
 
-
-
     @Autowired
+    @Qualifier("userServiceImpl")
     private UserService userService;
 
     @MockBean
     private UserDao userDao;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @MockBean
     private PageParameterDto pageParameterDto;
