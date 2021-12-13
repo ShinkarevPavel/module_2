@@ -50,9 +50,6 @@ class TagServiceImplTest {
     private TagDaoImpl tagDao;
 
     @MockBean
-    private UserDao userDao;
-
-    @MockBean
     private PageParameterDto pageParameterDto;
 
     @BeforeEach
@@ -104,8 +101,8 @@ class TagServiceImplTest {
     @Test
     void getAll() {
         when(tagDao.findAll(any())).thenReturn(tags);
-        List<TagDto> tags = tagService.getAll(pageParameterDto);
-        assertEquals(tags.size(), 2);
+        List<TagDto> actualTags = tagService.getAll(pageParameterDto);
+        assertEquals(actualTags.size(), 2);
     }
 
     @Test

@@ -73,7 +73,6 @@ class GiftCertificateDaoImplTest {
     @Order(1)
     void create() {
         GiftCertificate actual = certificateDao.create(newGiftCertificate);
-        System.out.println(actual);
         assertNotNull(actual.getId());
         assertEquals(actual.getName(), NEW_TAG_NAME);
         assertEquals(actual.getDescription(), NEW_TAG_DESCRIPTION);

@@ -31,15 +31,15 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = GiftCertificateServiceImpl.class)
 class GiftCertificateServiceImplTest {
 
-    private final static long TEST_ID = 1;
-    private final static long NO_SUCH_CERTIFICATE_ID = 2;
-    private final static long TEST_TAG_ID = 2;
-    private final static long NOT_VALID_TAG_ID = 2052;
-    private final static String TEST_TAG_NAME = "Test tag";
-    private final static String TEST_NAME = "CertificateOne";
-    private final static String TEST_DESCRIPTION = "certificate";
-    private final static double TEST_PRICE = 15.12;
-    private final static int TEST_DURATION = 10;
+    private static final long TEST_ID = 1;
+    private static final long NO_SUCH_CERTIFICATE_ID = 2;
+    private static final long TEST_TAG_ID = 2;
+    private static final long NOT_VALID_TAG_ID = 2052;
+    private static final String TEST_TAG_NAME = "Test tag";
+    private static final String TEST_NAME = "CertificateOne";
+    private static final String TEST_DESCRIPTION = "certificate";
+    private static final double TEST_PRICE = 15.12;
+    private static final int TEST_DURATION = 10;
 
     @Autowired
     private GiftCertificateServiceImpl giftCertificateService;

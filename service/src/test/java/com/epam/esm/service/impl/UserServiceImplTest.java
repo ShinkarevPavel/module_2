@@ -28,10 +28,10 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(classes = UserServiceImpl.class)
 class UserServiceImplTest {
 
-    private final Long CREATE_USER_ID = 1l;
-    private final String CREATE_USER_NAME = "CreateUser";
-    private final Long UPDATE_USER_ID = 10l;
-    private final String UPDATE_USER_NAME = "UpdateUser";
+    private static final Long CREATE_USER_ID = 1l;
+    private static final String CREATE_USER_NAME = "CreateUser";
+    private static final Long UPDATE_USER_ID = 10l;
+    private static final String UPDATE_USER_NAME = "UpdateUser";
 
     private User createdUser;
     private User updatableUser;

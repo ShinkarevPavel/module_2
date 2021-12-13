@@ -30,10 +30,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = OrderServiceImpl.class)
 class OrderServiceImplTest {
-    private final Long FIRST_ORDER_ID = 1L;
-    private final Long SECOND_ORDER_ID = 2L;
-    private final Double FIRST_ORDER_COST = 123.40;
-    private final Double SECOND_ORDER_COST = 1123.40;
+    private static final Long FIRST_ORDER_ID = 1L;
+    private static final Long SECOND_ORDER_ID = 2L;
+    private static final Double FIRST_ORDER_COST = 123.40;
+    private static final Double SECOND_ORDER_COST = 1123.40;
     private Order firstOrder;
     private Order secondOrder;
     private List<GiftCertificate> certificates;

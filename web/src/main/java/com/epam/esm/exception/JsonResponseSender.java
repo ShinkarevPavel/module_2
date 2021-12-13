@@ -14,7 +14,7 @@ public class JsonResponseSender {
     private static final String RESPONSE_CONTENT_TYPE = "application/json";
 
     public void send(HttpServletResponse httpServletResponse, Object responseObject) throws IOException {
-        ResponseEntity response = (ResponseEntity) responseObject; //TODO
+        ResponseEntity response = (ResponseEntity) responseObject;
         Map<String, Object> responseMap = (Map<String, Object>) response.getBody();
         httpServletResponse.setCharacterEncoding(RESPONSE_CHAR_ENCODING);
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

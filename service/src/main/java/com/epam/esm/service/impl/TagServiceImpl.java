@@ -20,12 +20,10 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
     private TagDao tagDao;
-    private UserDao userDao;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao, UserDao userDao) {
+    public TagServiceImpl(TagDao tagDao) {
         this.tagDao = tagDao;
-        this.userDao = userDao;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.PageParameter;
 import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,12 +12,13 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class TagDaoImpl implements TagDao {
-    private final String MOST_USEFUL_TAG = "SELECT t.id, t.name FROM tags t\n" +
+    private static final String MOST_USEFUL_TAG = "SELECT t.id, t.name FROM tags t\n" +
             "INNER JOIN tag_certificate_associate tc ON tc.tag_id = t.id\n" +
             "INNER JOIN gift_certificate gc ON gc.id = tc.gift_id\n" +
             "INNER JOIN order_certificate_associate oc ON oc.certificate_id = gc.id\n" +
@@ -73,7 +75,7 @@ public class TagDaoImpl implements TagDao {
         query.select(root);
         query.where(criteriaBuilder.equal(root.get(NAME_PARAM), name));
         List<Tag> tags = entityManager.createQuery(query).getResultList();
-        return tags.size() == 0 ? Optional.empty() : Optional.of(tags.get(TAG_PARAM));
+        return CollectionUtils.isEmpty(tags) ? Optional.empty() : Optional.of(tags.get(TAG_PARAM));
     }
 
     @Override

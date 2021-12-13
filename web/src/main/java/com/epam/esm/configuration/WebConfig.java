@@ -21,9 +21,4 @@ public class WebConfig extends SpringBootServletInitializer{
         messages.setDefaultEncoding("UTF-8");
         return messages;
     }
-
-//    @Override
-//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-//        return builder.sources(WebConfig.class);
-//    }
 }

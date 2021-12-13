@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 @Component
 public class DtoMapper {
 
+    private DtoMapper() {
+    }
+
     public static GiftCertificateDto certificateToDto(GiftCertificate giftCertificate) {
         return GiftCertificateDto.builder()
                 .id(giftCertificate.getId())

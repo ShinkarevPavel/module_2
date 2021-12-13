@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class GiftCertificateServiceImpl<T> implements GiftCertificateService {
+public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDao giftCertificateDao;
     private TagDao tagDao;
