@@ -144,7 +144,7 @@
                 <version>0.8.3</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/*.html</exclude>
+                        <exclude>site/jacoco/com.epam.esm/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
