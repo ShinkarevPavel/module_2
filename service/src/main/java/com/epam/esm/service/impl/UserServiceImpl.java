@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.dao.jparepository.UserRepository;
 import com.epam.esm.dto.PageParameterDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
@@ -14,14 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
+    private UserRepository userRepository;
 
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
+
+
+    public UserServiceImpl(UserDao userDao, UserRepository userRepository) {
         this.userDao = userDao;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -29,6 +33,11 @@ public class UserServiceImpl implements UserService {
     public UserDto create(UserDto userDto) {
         User user = userDao.create(DtoMapper.dtoToUser(userDto));
         return DtoMapper.userToDto(user);
+    }
+
+    @Override
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new NoSuchEntityException("user.username_is_not_present"));
     }
 
     @Override
@@ -57,10 +66,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void delete(UserDto userDto) {
-        if (!userDao.isContains(userDto.getId())) {
+    public void delete(Long userId) {
+        if (!userDao.isContains(userId)) {
             throw new NoSuchEntityException();
         }
-        userDao.delete(userDto.getId());
+        userDao.delete(userId);
     }
 }
